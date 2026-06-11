@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment files — NEVER commit secrets
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+.next/
+
+# Prisma generated client (regenerated at build time)
+backend/node_modules/.prisma/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Graphify analysis output (generated, not source)
+graphify-out/
+backend/graphify-out/

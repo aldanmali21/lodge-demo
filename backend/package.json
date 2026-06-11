@@ -1,0 +1,34 @@
+{
+  "name": "twin-lakes-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:validate": "prisma validate",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "db:setup": "prisma db push && node prisma/seed.js",
+    "vercel-build": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.9.0",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^8.5.2",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "nodemailer": "^8.0.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "prisma": "^5.9.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}

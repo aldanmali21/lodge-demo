@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green-950: #0d1a0f;
+  --green-900: #1b3520;
+  --green-700: #2d5a22;
+  --sage-100: #eef2e4;
+  --sage-50:  #f5f7ee;
+  --cream:    #fafaf7;
+  --gold:     #c8a96e;
+  --text:     #1c2b1e;
+  --text-muted: #5a6b5c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--sage-100);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c5d6a0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9db87a; }
+
+/* Staggered fade-in for cards */
+.stagger-1 { opacity: 0; animation: fadeIn 0.4s ease-out 0.1s forwards; }
+.stagger-2 { opacity: 0; animation: fadeIn 0.4s ease-out 0.2s forwards; }
+.stagger-3 { opacity: 0; animation: fadeIn 0.4s ease-out 0.3s forwards; }
+.stagger-4 { opacity: 0; animation: fadeIn 0.4s ease-out 0.4s forwards; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Status badge colors */
+.badge-dirty    { background: #fee2e2; color: #b91c1c; }
+.badge-cleaning { background: #fef3c7; color: #b45309; }
+.badge-clean    { background: #d1fae5; color: #065f46; }
+.badge-inspected{ background: #dbeafe; color: #1d4ed8; }
+.badge-occupied { background: #f3e8ff; color: #7e22ce; }
+.badge-available{ background: #d1fae5; color: #065f46; }

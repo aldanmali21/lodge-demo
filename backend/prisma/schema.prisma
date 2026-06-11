@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int               @id @default(autoincrement())
+  name         String
+  email        String            @unique
+  passwordHash String            @map("password_hash")
+  role         String
+  createdAt    DateTime          @default(now()) @map("created_at")
+  notificationsSeenAt DateTime?  @map("notifications_seen_at")
+
+  reservations      Reservation[]
+  payments          Payment[]
+  financeEntries    FinanceEntry[]
+  housekeepingTasks HousekeepingTask[]
+  auditLogs         AuditLog[]
+  sentInvites       UserInvite[]
+  reconciliations   ShiftReconciliation[]
+
+  @@map("users")
+}
+
+model Room {
+  id          Int      @id @default(autoincrement())
+  number      String   @unique
+  type        String
+  capacity    Int
+  defaultRate Decimal  @db.Decimal(12, 2) @map("default_rate")
+  status      String   // availability: available | occupied
+  housekeepingStatus String @default("clean") @map("housekeeping_status") // dirty | cleaning | clean
+
+  reservationRooms  ReservationRoom[]
+  housekeepingTasks HousekeepingTask[]
+
+  @@map("rooms")
+}
+
+model Reservation {
+  id           Int      @id @default(autoincrement())
+  guestName    String   @map("guest_name")
+  guestContact String   @map("guest_contact")
+  status       String
+  checkinDate  DateTime @map("checkin_date")
+  checkoutDate DateTime @map("checkout_date")
+  createdBy    Int?     @map("created_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  creator          User?             @relation(fields: [createdBy], references: [id])
+  reservationRooms ReservationRoom[]
+  folio            Folio?
+  activityBookings ActivityBooking[]
+
+  @@map("reservations")
+}
+
+model ReservationRoom {
+  id            Int @id @default(autoincrement())
+  reservationId Int @map("reservation_id")
+  roomId        Int @map("room_id")
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+  room        Room        @relation(fields: [roomId], references: [id])
+
+  @@map("reservation_rooms")
+}
+
+model Folio {
+  id            Int     @id @default(autoincrement())
+  reservationId Int     @unique @map("reservation_id")
+  totalAmount   Decimal @db.Decimal(14, 2) @map("total_amount")
+  currency      String
+  status        String
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+  items       FolioItem[]
+  payments    Payment[]
+
+  @@map("folios")
+}
+
+model FolioItem {
+  id          Int      @id @default(autoincrement())
+  folioId     Int      @map("folio_id")
+  description String   @db.Text
+  amount      Decimal  @db.Decimal(12, 2)
+  currency    String
+  type        String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  folio Folio @relation(fields: [folioId], references: [id])
+
+  @@map("folio_items")
+}
+
+model Payment {
+  id         Int      @id @default(autoincrement())
+  folioId    Int?     @map("folio_id")
+  amount     Decimal  @db.Decimal(14, 2)
+  currency   String
+  method     String   @db.VarChar(32)
+  reference  String?  @db.VarChar(128)
+  receivedBy Int      @map("received_by")
+  timestamp  DateTime @default(now())
+
+  folio    Folio? @relation(fields: [folioId], references: [id])
+  receiver User   @relation(fields: [receivedBy], references: [id])
+
+  @@map("payments")
+}
+
+model Activity {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String  @db.Text
+  maxCapacity Int     @map("max_capacity")
+  price       Decimal @default(0) @db.Decimal(12, 2) // per-person price
+
+  schedules ActivitySchedule[]
+
+  @@map("activities")
+}
+
+model ActivitySchedule {
+  id          Int       @id @default(autoincrement())
+  activityId  Int       @map("activity_id")
+  scheduledAt DateTime  @map("scheduled_at") // start
+  endAt       DateTime? @map("end_at")       // end (optional)
+  capacity    Int?                            // per-slot override of activity.maxCapacity
+  status      String    @default("not_started") // not_started | in_progress | completed
+  location    String
+
+  activity Activity          @relation(fields: [activityId], references: [id])
+  bookings ActivityBooking[]
+
+  @@map("activity_schedules")
+}
+
+model ActivityBooking {
+  id            Int     @id @default(autoincrement())
+  scheduleId    Int     @map("schedule_id")
+  reservationId Int?    @map("reservation_id") // null for walk-in guests
+  guestName     String? @map("guest_name")      // walk-in name when reservationId is null
+  paxCount      Int     @map("pax_count")
+
+  schedule    ActivitySchedule @relation(fields: [scheduleId], references: [id])
+  reservation Reservation?     @relation(fields: [reservationId], references: [id])
+
+  @@map("activity_bookings")
+}
+
+model HousekeepingTask {
+  id         Int      @id @default(autoincrement())
+  roomId     Int      @map("room_id")
+  status     String
+  assignedTo Int?     @map("assigned_to")
+  notes      String?  @db.Text
+  timestamp  DateTime @default(now())
+
+  room       Room  @relation(fields: [roomId], references: [id])
+  assignee   User? @relation(fields: [assignedTo], references: [id])
+
+  @@map("housekeeping_tasks")
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actorId    Int      @map("actor_id")
+  action     String
+  objectType String   @map("object_type")
+  objectId   Int      @map("object_id")
+  details    Json
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model UserInvite {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  role      String
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  createdBy Int       @map("created_by")
+
+  inviter User @relation(fields: [createdBy], references: [id])
+
+  @@map("user_invites")
+}
+
+model ShiftReconciliation {
+  id             Int      @id @default(autoincrement())
+  date           DateTime @default(now())
+  closedBy       Int      @map("closed_by")
+  expectedCash   Decimal  @default(0) @db.Decimal(14, 2) @map("expected_cash")
+  actualCash     Decimal  @default(0) @db.Decimal(14, 2) @map("actual_cash")
+  expectedMobile Decimal  @default(0) @db.Decimal(14, 2) @map("expected_mobile")
+  actualMobile   Decimal  @default(0) @db.Decimal(14, 2) @map("actual_mobile")
+  expectedCard   Decimal  @default(0) @db.Decimal(14, 2) @map("expected_card")
+  actualCard     Decimal  @default(0) @db.Decimal(14, 2) @map("actual_card")
+  currency       String   @default("USD")
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  closer User @relation(fields: [closedBy], references: [id])
+
+  @@map("shift_reconciliations")
+}
+
+model FinanceEntry {
+  id          Int      @id @default(autoincrement())
+  entryType   String   @map("entry_type") // income | expense
+  category    String
+  description String   @db.Text
+  amount      Decimal  @db.Decimal(14, 2)
+  currency    String   @default("USD")
+  entryDate   DateTime @map("entry_date")
+  createdBy   Int      @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  creator User @relation(fields: [createdBy], references: [id])
+
+  @@map("finance_entries")
+}
+
+model ExchangeRate {
+  id             Int      @id @default(autoincrement())
+  baseCurrency   String   @map("base_currency")
+  targetCurrency String   @map("target_currency")
+  rate           Decimal  @db.Decimal(18, 8)
+  effectiveDate  DateTime @map("effective_date")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("exchange_rates")
+}

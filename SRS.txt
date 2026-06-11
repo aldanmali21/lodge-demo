@@ -1,0 +1,112 @@
+Software Requirements Specification (SRS)
+Project: Twin Lakes Safari Lodge Management System (LMS)
+1. Introduction
+1.1 Purpose
+This document outlines the architecture, features, and workflows for a custom lodge management application tailored to the operations of Twin Lakes Safari Lodge. The system unifies room reservations, activity bookings, restaurant point-of-sale (POS), and manual financial ledgers into a single cohesive platform.
+
+1.2 Scope
+The LMS will replace fragmented manual or legacy processes. It focuses heavily on intuitive front-desk operations, manual financial reconciliation, and cross-departmental communication (housekeeping, restaurant, and guides). External payment gateway integration is strictly excluded from this phase; all financial records will be maintained via manual staff entry.
+
+2. System Architecture & Technology Stack
+The application will follow a standard Client-Server architecture.
+
+Frontend: React configured with Vite for fast build times and highly responsive single-page application (SPA) rendering. State management (e.g., Redux or Zustand) will handle complex states like the booking calendar.
+
+Backend: Node.js (with Express.js) handling RESTful API routing, business logic, and manual data validation.
+
+Database: MySQL. To ensure strict relational data integrity and type safety across the Node.js backend, an ORM like Prisma is highly recommended to model the complex relationships between guests, rooms, activities, and financial ledgers.
+
+Authentication: Custom JWT-based (JSON Web Token) authentication handled natively within the Node.js/MySQL stack. Passwords will be securely hashed (e.g., using bcrypt) and stored in the MySQL database. No third-party auth services will be used.
+
+3. User Roles & Access Control
+Role-Based Access Control (RBAC) is enforced at the JWT and API endpoint levels.
+
+Administrator (General Manager): Full access. Can view financial analytics, audit logs, manage staff accounts, and configure system settings (room rates, activity pricing).
+
+Front Desk (Reception): Access to reservations, guest profiles, check-in/check-out, folio management, and manual payment entry.
+
+Restaurant/Bar POS: Access restricted to creating table orders and routing charges to specific guest rooms.
+
+Activity Guide: Access strictly to view daily activity manifests (who is booked for the Kazinga boat cruise, game drives, etc.).
+
+Housekeeping: Mobile-optimized view of room statuses (Dirty, Cleaning, Clean, Inspected) with the ability to update them.
+
+4. Core System Workflows (How the App Works)
+4.1 The Reservation & Check-In Flow
+
+Inquiry/Booking: A guest requests a booking (via phone, email, or walk-in). The Front Desk checks the interactive calendar grid.
+
+Creation: Staff creates a new reservation, inputting guest details, selecting room(s), and attaching any pre-booked activities (e.g., a park game drive).
+
+Arrival: Upon arrival, staff pulls up the reservation, clicks "Check-In", and the system automatically changes the room status to "Occupied".
+
+4.2 The In-Stay Flow (Incidental Charges)
+
+Dining: The guest orders dinner at the restaurant. The POS user inputs the order and selects "Charge to Room X".
+
+Activities: The guest decides to book a nature walk. The Front Desk adds this to their folio, and the guest's name is instantly added to the guide's manifest for that day.
+
+4.3 The Checkout & Manual Finance Flow
+
+Folio Generation: Upon checkout, the system compiles the Master Folio (Room rate + Restaurant charges + Activities).
+
+Manual Payment Entry: Staff reviews the total with the guest. The guest pays via physical cash, mobile money transfer, or physical POS machine.
+
+Ledger Update: The staff clicks "Record Payment" and manually inputs the amount received, the currency (USD or UGX), the payment method (e.g., "Cash", "Airtel Money", "Card Terminal"), and a reference number if applicable.
+
+Closure: The system marks the folio as "Paid", changes the room status to "Dirty", and logs the transaction in the financial tracking module.
+
+5. Detailed Functional Requirements
+5.1 Interactive Dashboard & Calendar
+Tape Chart (Grid View): A visually distinct calendar showing dates on the X-axis and rooms on the Y-axis. Bookings are represented as color-coded blocks (Pending, Confirmed, Checked-In).
+
+Quick Actions: Clicking a block opens a modal to view guest details, add payments, or edit dates without leaving the calendar screen.
+
+Today's Overview: A snapshot widget showing "Arrivals Today," "Departures Today," "In-House," and "Pending Housekeeping."
+
+5.2 Guest & Reservation Management
+Guest CRM: A database of past guests to track loyal customers, dietary restrictions, and contact info.
+
+Folio Management: A centralized digital invoice for each booking where line items can be added, edited, or voided (with mandatory void reasons for auditing).
+
+5.3 Activity & Experience Management
+Schedule Builder: Admins can create scheduled blocks for activities (e.g., "Afternoon Boat Cruise - Max 10 pax - 3:00 PM").
+
+Booking Integration: Front desk can allocate guests to these blocks. The system prevents overbooking based on the defined maximum capacity.
+
+Exportable Manifests: Printable or mobile-viewable lists for the operational team running the activities.
+
+5.4 Point of Sale (POS) - Restaurant & Bar
+Menu Management: Categorized menu items (Drinks, Main Course, Snacks) with assigned prices.
+
+Room Routing: The critical ability to bypass immediate payment and send the ticket directly to a guest's room folio.
+
+Cash Sales: Ability to process immediate walk-in orders for non-staying guests (payments recorded manually).
+
+5.5 Finance Tracking & Manual Reconciliations
+Manual Payment Ledger: A dedicated screen logging every manual payment entry. Fields include: Timestamp, Staff ID, Amount, Currency, Method, Reference Note, and Associated Folio.
+
+Shift/Till Reconciliation: Front desk staff must "close their shift." The system will calculate how much cash/mobile money they should have collected based on manual entries, which they must physically verify.
+
+Expense Tracking (Optional but recommended): A simple ledger for the manager to manually log daily operational expenditures (e.g., fuel for the safari vehicles, fresh food purchases) to calculate basic profit/loss.
+
+Multi-Currency Support: The database must handle UGX and USD natively. The system should allow the admin to set a daily or weekly exchange rate so that USD room rates can be accurately settled in UGX if the guest prefers.
+
+5.6 Housekeeping Module
+Automated Status Triggers: Rooms go "Dirty" at checkout.
+
+Task List: A simplified interface listing rooms that need attention, allowing staff to tap and switch the status to "Clean."
+
+6. Non-Functional Requirements
+6.1 UI/UX & Interaction Design
+Cognitive Load Reduction: The interface must prioritize clear visual hierarchies, intuitive navigation, and high contrast. Complex data like the reservation calendar should be easily scannable to prevent front-desk booking errors.
+
+Responsive Design: While the main dashboard is optimized for desktop/tablets at the reception desk, the Housekeeping and Guide modules must be fully functional and readable on mobile devices.
+
+6.2 Security & Data Integrity
+Audit Trails: Every manual financial entry, booking modification, or folio adjustment must be irreversibly logged in the MySQL database with the ID of the user who performed it.
+
+Input Validation: The Node.js backend must rigorously sanitize all manual inputs (especially financial figures) to prevent SQL injection and ensure data types are correct before committing to the database.
+
+6.3 Performance
+Optimized Queries: Database queries, especially for rendering the monthly tape chart and querying historical financial ledgers, must be indexed appropriately to maintain load times under 2 seconds.
