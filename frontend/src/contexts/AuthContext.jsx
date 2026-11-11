@@ -1,5 +1,6 @@
-import { createContext, useContext, useReducer } from 'react'
+import { createContext, useContext, useState } from 'react'
 import api from '../lib/api'
+import { resetDemo } from '../mock/server'
 
 const AuthContext = createContext(null)
 
@@ -15,53 +16,24 @@ const WRITE_ROLES = {
   '/settings':     ['admin', 'frontdesk', 'pos', 'guide', 'housekeeping', 'viewer'],
 }
 
-const initialState = {
-  user: JSON.parse(localStorage.getItem('tl_user') || 'null'),
-  token: localStorage.getItem('tl_token') || null,
-  loading: false,
-}
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'LOGIN':
-      return { ...state, user: action.user, token: action.token, loading: false }
-    case 'LOGOUT':
-      return { user: null, token: null, loading: false }
-    case 'LOADING':
-      return { ...state, loading: true }
-    case 'UPDATE_USER':
-      return { ...state, user: { ...state.user, ...action.user } }
-    default:
-      return state
-  }
-}
+// Demo mode: no login. The visitor is always signed in as the lodge admin.
+const DEMO_USER = { id: 1, name: 'Aldan Mali', email: 'admin@twinlakes.demo', role: 'admin' }
 
 export function AuthProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [user, setUser] = useState(DEMO_USER)
 
-  async function login(email, password) {
-    dispatch({ type: 'LOADING' })
-    const { data } = await api.post('/auth/login', { email, password })
-    localStorage.setItem('tl_token', data.token)
-    localStorage.setItem('tl_user', JSON.stringify(data.user))
-    dispatch({ type: 'LOGIN', user: data.user, token: data.token })
-    return data.user
+  function updateUser(patch) {
+    setUser(u => ({ ...u, ...patch }))
   }
 
-  function logout() {
-    localStorage.removeItem('tl_token')
-    localStorage.removeItem('tl_user')
-    dispatch({ type: 'LOGOUT' })
-  }
-
-  function updateUser(user) {
-    const updated = { ...state.user, ...user }
-    localStorage.setItem('tl_user', JSON.stringify(updated))
-    dispatch({ type: 'UPDATE_USER', user })
+  // "Reset demo" — restores the original seeded records and reloads.
+  function resetData() {
+    resetDemo()
+    window.location.assign('/dashboard')
   }
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, updateUser, isAuthenticated: !!state.token }}>
+    <AuthContext.Provider value={{ user, token: 'demo', loading: false, updateUser, resetData, isAuthenticated: true }}>
       {children}
     </AuthContext.Provider>
   )
