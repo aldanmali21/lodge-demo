@@ -3,8 +3,6 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AppLayout from './layouts/AppLayout'
 import { ToastContainer } from './components/Toast'
-import Login from './pages/Login'
-import AcceptInvite from './pages/AcceptInvite'
 import Dashboard from './pages/Dashboard'
 import Calendar from './pages/Calendar'
 import Guests from './pages/Guests'
@@ -33,9 +31,9 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/accept-invite" element={<AcceptInvite />} />
+          {/* Demo: no login or sign-up — straight into the app */}
+          <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/accept-invite" element={<Navigate to="/dashboard" replace />} />
 
           {/* Authenticated app shell */}
           <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

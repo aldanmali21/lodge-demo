@@ -1,5 +1,8 @@
 # Twin Lakes Safari Lodge Management System
 
+> **Demo build (static):** this repo is a database-free, login-free demo. The frontend answers every `/api/*` call from an in-browser mock (`frontend/src/mock/` — seeded demo records, state in `sessionStorage`; the sidebar "Reset Demo Data" button restores the seed). There is no sign-in; visitors land on the dashboard as admin. The `backend/` folder is the original Express + Prisma API and is **not used** by the demo. Deploy: Vercel, root directory `frontend`, framework Vite.
+
+
 A full-stack lodge management system for Twin Lakes Safari Lodge, Uganda. Built with Node.js + Express + Prisma + MySQL (backend) and React + Vite + Tailwind CSS (frontend).
 
 ## Quick Start

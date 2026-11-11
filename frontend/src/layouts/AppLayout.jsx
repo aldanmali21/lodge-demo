@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Calendar, FileText, Compass,
   UtensilsCrossed, Bed, Building2, Settings,
-  Bell, Plus, Mountain, LogOut, Users,
+  Bell, Plus, Mountain, RotateCcw, Users,
   AlignLeft, X, DoorOpen, BarChart3
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -48,7 +48,7 @@ function NavItem({ to, label, icon: Icon, user, roles, onClick }) {
 }
 
 export default function AppLayout() {
-  const { user, logout } = useAuth()
+  const { user, resetData } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [showBooking, setShowBooking] = useState(false)
@@ -115,11 +115,12 @@ export default function AppLayout() {
             <span>Settings</span>
           </button>
           <button
-            onClick={() => { logout(); navigate('/login') }}
+            onClick={resetData}
+            title="Restore the original demo records"
             className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/40 hover:text-red-300 hover:bg-white/5 transition-all w-full mt-1"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Sign Out</span>
+            <RotateCcw className="w-4 h-4" />
+            <span>Reset Demo Data</span>
           </button>
         </div>
       </aside>
