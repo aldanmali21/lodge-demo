@@ -32,6 +32,8 @@ export default function SiteBook() {
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
 
+  useEffect(() => { if (phase === 'done') window.scrollTo(0, 0) }, [phase])
+
   useEffect(() => {
     if (!from || !to || !type) return
     api.get('/rooms/available', { params: { from: stamp(from, 14), to: stamp(to, 10) } })
@@ -80,15 +82,15 @@ export default function SiteBook() {
   if (phase === 'done' && result) {
     return (
       <SiteLayout solid>
-        <div className="max-w-2xl mx-auto px-5 py-16">
+        <div className="max-w-2xl mx-auto px-5 py-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-            <div className="text-center px-8 pt-12 pb-8" style={{ background: 'linear-gradient(180deg,#eef2e4,#fff)' }}>
-              <CheckCircle2 className="w-16 h-16 mx-auto text-forest-600" />
-              <h1 className="font-display text-4xl text-forest-900 mt-4">Booking confirmed</h1>
+            <div className="text-center px-8 pt-8 pb-5" style={{ background: 'linear-gradient(180deg,#eef2e4,#fff)' }}>
+              <CheckCircle2 className="w-14 h-14 mx-auto text-forest-600" />
+              <h1 className="font-display text-4xl text-forest-900 mt-2">Booking confirmed</h1>
               <p className="text-forest-950/70 mt-2">Thank you, {d.name.split(' ')[0]}. A confirmation has been sent to <strong>{d.email}</strong>.</p>
-              <p className="mt-5 inline-block px-5 py-2 rounded-full text-sm font-semibold tracking-widest text-forest-900" style={{ background: '#c8a96e33' }}>REF {result.reference}</p>
+              <p className="mt-3 inline-block px-5 py-1.5 rounded-full text-sm font-semibold tracking-widest text-forest-900" style={{ background: '#c8a96e33' }}>REF {result.reference}</p>
             </div>
-            <div className="px-8 pb-10 grid gap-3 text-[15px]">
+            <div className="px-8 pb-7 grid gap-2 text-[15px]">
               <Row k="Room" v={`${result.room.type} · Room ${result.room.number}`} />
               <Row k="Arrival" v={`${fmtDate(from)} · from 2:00 pm`} />
               <Row k="Departure" v={`${fmtDate(to)} · by 10:00 am`} />
@@ -98,7 +100,7 @@ export default function SiteBook() {
               <Row k="Tourism levy & VAT" v={money(result.taxes)} />
               <Row k={`Paid with ${result.paymentMethod}`} v={money(result.total)} bold />
               <p className="text-xs text-forest-950/50 mt-3">Demo payment — no real money was charged.</p>
-              <div className="mt-4 flex flex-wrap gap-3">
+              <div className="mt-2 flex flex-wrap gap-3">
                 <Link to="/site" className="px-6 py-3 rounded-full bg-forest-900 text-white text-sm font-medium">Back to the lodge</Link>
                 <button onClick={() => window.print()} className="px-6 py-3 rounded-full border border-forest-900/30 text-forest-900 text-sm font-medium flex items-center gap-2"><Printer className="w-4 h-4" />Print</button>
                 <Link to="/dashboard" className="px-6 py-3 rounded-full text-sm font-medium text-forest-950" style={{ background: '#c8a96e' }}>See it in the lodge system →</Link>
