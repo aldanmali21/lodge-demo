@@ -3,12 +3,12 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Lock, Smartphone, CreditCard, CheckCircle2, ShieldCheck, CalendarDays, BedDouble, Loader2, Printer } from 'lucide-react'
 import api from '../lib/api'
 import SiteLayout from './SiteLayout'
-import { ROOM_INFO, fallbackInfo, TAX_RATE, money, ugx, fmtDate, nightsBetween, stamp } from './catalog'
+import { ROOM_INFO, fallbackInfo, TAX_RATE, money, fmtDate, nightsBetween, stamp } from './catalog'
 
 const METHODS = [
   { id: 'MTN Mobile Money', label: 'MTN MoMo', sub: 'Pay from your phone', icon: Smartphone, color: '#ffcc00', ink: '#1a1a1a', mobile: true },
   { id: 'Airtel Money', label: 'Airtel Money', sub: 'Pay from your phone', icon: Smartphone, color: '#e40000', ink: '#fff', mobile: true },
-  { id: 'Visa Card', label: 'Card', sub: 'Visa or Mastercard', icon: CreditCard, color: '#1b3520', ink: '#fff', mobile: false },
+  { id: 'Visa Card', label: 'Card (Pesapal)', sub: 'Visa or Mastercard', icon: CreditCard, color: '#1b3520', ink: '#fff', mobile: false },
 ]
 
 const input = 'w-full px-4 py-3 rounded-xl border border-sage-300 bg-white outline-none focus:border-forest-600 focus:ring-2 focus:ring-forest-600/15 text-[15px]'
@@ -27,6 +27,8 @@ export default function SiteBook() {
   const [method, setMethod] = useState(METHODS[0])
   const [momoPhone, setMomoPhone] = useState('')
   const [card, setCard] = useState({ number: '', exp: '', cvc: '' })
+  const [pct, setPct] = useState(30)
+  const [requests, setRequests] = useState('')
   const [phase, setPhase] = useState('form') // form | paying | done
   const [step, setStep] = useState(0)
   const [error, setError] = useState('')
@@ -45,6 +47,7 @@ export default function SiteBook() {
   const subtotal = rate * nights
   const taxes = subtotal * TAX_RATE
   const total = subtotal + taxes
+  const due = total * pct / 100
 
   function demoFill() {
     setD({ name: 'Grace Namukasa', email: 'grace.namukasa@example.com', phone: '0772 123 456' })
@@ -65,7 +68,7 @@ export default function SiteBook() {
       await wait(method.mobile ? 2200 : 1200); setStep(2)
       const res = await api.post('/public/bookings', {
         guestName: d.name.trim(), guestEmail: d.email.trim(), guestPhone: d.phone.trim(), guests,
-        checkinDate: stamp(from, 14), checkoutDate: stamp(to, 10), roomType: type, paymentMethod: method.id,
+        checkinDate: stamp(from, 14), checkoutDate: stamp(to, 10), roomType: type, paymentMethod: method.id, depositPct: pct, requests,
       })
       await wait(900)
       setResult(res.data); setPhase('done')
@@ -76,7 +79,7 @@ export default function SiteBook() {
   }
 
   if (!from || !to || !type || nights < 1) {
-    return <SiteLayout solid><div className="max-w-xl mx-auto py-32 text-center px-5"><p className="font-display text-3xl text-forest-900">Choose your dates and room first</p><Link to="/site#rooms" className="inline-block mt-6 px-6 py-3 rounded-full bg-forest-900 text-white">Browse rooms</Link></div></SiteLayout>
+    return <SiteLayout solid><div className="max-w-xl mx-auto py-32 text-center px-5"><p className="font-display text-3xl text-forest-900">Choose your dates and room first</p><Link to="/site/rooms" className="inline-block mt-6 px-6 py-3 rounded-full bg-forest-900 text-white">Browse rooms</Link></div></SiteLayout>
   }
 
   if (phase === 'done' && result) {
@@ -98,7 +101,8 @@ export default function SiteBook() {
               <hr className="border-sage-200 my-2" />
               <Row k={`Room (${result.nights} night${result.nights > 1 ? 's' : ''})`} v={money(result.subtotal)} />
               <Row k="Tourism levy & VAT" v={money(result.taxes)} />
-              <Row k={`Paid with ${result.paymentMethod}`} v={money(result.total)} bold />
+              <Row k={`Paid now with ${result.paymentMethod}`} v={money(result.paid)} bold />
+              {result.balance > 0 && <Row k="Balance due at the lodge" v={money(result.balance)} />}
               <p className="text-xs text-forest-950/50 mt-3">Demo payment — no real money was charged.</p>
               <div className="mt-2 flex flex-wrap gap-3">
                 <Link to="/site" className="px-6 py-3 rounded-full bg-forest-900 text-white text-sm font-medium">Back to the lodge</Link>
@@ -119,7 +123,7 @@ export default function SiteBook() {
   return (
     <SiteLayout solid>
       <div className="max-w-6xl mx-auto px-5 py-12">
-        <Link to="/site#rooms" className="text-sm text-forest-700 hover:underline">← Back to rooms</Link>
+        <Link to="/site/rooms" className="text-sm text-forest-700 hover:underline">← Back to rooms</Link>
         <h1 className="font-display text-4xl text-forest-900 mt-3">Complete your booking</h1>
 
         <form onSubmit={pay} className="mt-8 grid gap-8 lg:grid-cols-[1fr_400px] items-start">
@@ -133,12 +137,20 @@ export default function SiteBook() {
                 <div className="sm:col-span-2"><label className={label}>Full name</label><input id="guest-name" className={input} value={d.name} onChange={e => setD({ ...d, name: e.target.value })} placeholder="e.g. Grace Namukasa" /></div>
                 <div><label className={label}>Email</label><input id="guest-email" type="email" className={input} value={d.email} onChange={e => setD({ ...d, email: e.target.value })} placeholder="you@example.com" /></div>
                 <div><label className={label}>Phone</label><input id="guest-phone" className={input} value={d.phone} onChange={e => setD({ ...d, phone: e.target.value })} placeholder="07xx xxx xxx" /></div>
+                <div className="sm:col-span-2"><label className={label}>Special requests (optional)</label><textarea className={input} rows={2} value={requests} onChange={e => setRequests(e.target.value)} placeholder="Airport pickup, late arrival, celebrations…" /></div>
               </div>
             </section>
 
             <section className="bg-white rounded-2xl p-7 shadow-sm">
               <h2 className="font-display text-2xl text-forest-900 mb-5">2. Payment</h2>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                {[[30, 'Pay 30% deposit', 'Balance at the lodge'], [100, 'Pay in full', 'Nothing to pay later']].map(([v, a, b]) => (
+                  <button type="button" key={v} onClick={() => setPct(v)} className={`rounded-xl border-2 p-4 text-left transition ${pct === v ? 'border-forest-700 bg-sage-50' : 'border-sage-200 hover:border-sage-300'}`}>
+                    <span className="block text-sm font-semibold text-forest-900">{a} · {money(total * v / 100)}</span><span className="block text-xs text-forest-950/55">{b}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {METHODS.map(m => (
                   <button type="button" key={m.id} onClick={() => setMethod(m)}
                     className={`rounded-xl border-2 p-4 text-left transition ${method.id === m.id ? 'border-forest-700 bg-sage-50' : 'border-sage-200 hover:border-sage-300'}`}>
@@ -153,7 +165,7 @@ export default function SiteBook() {
                   <div>
                     <label className={label}>{method.label} number</label>
                     <input id="momo-phone" className={input} value={momoPhone} onChange={e => setMomoPhone(e.target.value)} placeholder={d.phone || '07xx xxx xxx'} />
-                    <p className="text-xs text-forest-950/55 mt-2">You’ll get a prompt on this phone to approve {ugx(total)}.</p>
+                    <p className="text-xs text-forest-950/55 mt-2">You’ll get a prompt on this phone to approve {money(due)}.</p>
                   </div>
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -165,7 +177,7 @@ export default function SiteBook() {
               </div>
               {error && <p className="mt-4 text-sm text-red-700 bg-red-50 rounded-lg px-4 py-2.5">{error}</p>}
               <button id="pay-button" type="submit" disabled={!room} className="mt-6 w-full py-4 rounded-xl text-forest-950 font-semibold text-lg flex items-center justify-center gap-2 hover:brightness-105 transition disabled:opacity-50" style={{ background: '#c8a96e' }}>
-                <Lock className="w-5 h-5" /> Pay {money(total)}
+                <Lock className="w-5 h-5" /> Pay {money(due)} {pct < 100 ? 'deposit' : ''}
               </button>
               <p className="text-xs text-forest-950/50 mt-3 flex items-center gap-1.5 justify-center"><ShieldCheck className="w-4 h-4" /> Secure checkout · Demo only — no money is charged</p>
             </section>
@@ -177,11 +189,11 @@ export default function SiteBook() {
               <h3 className="font-display text-2xl text-forest-900">{type}</h3>
               <p className="text-sm text-forest-950/60 flex items-center gap-1.5 mt-1"><BedDouble className="w-4 h-4" />{info.beds}</p>
               <p className="text-sm text-forest-950/75 mt-4 flex items-start gap-2"><CalendarDays className="w-4 h-4 mt-0.5 text-forest-600" /><span>{fmtDate(from)} → {fmtDate(to)}<br /><span className="text-forest-950/55">{nights} night{nights > 1 ? 's' : ''} · {guests} guest{guests > 1 ? 's' : ''}</span></span></p>
-              {room === false ? <p className="mt-5 text-sm text-red-700">This room type is no longer available for those dates. <Link to="/site#rooms" className="underline">Choose another</Link></p> : (
+              {room === false ? <p className="mt-5 text-sm text-red-700">This room type is no longer available for those dates. <Link to="/site/rooms" className="underline">Choose another</Link></p> : (
                 <div className="mt-5 pt-5 border-t border-sage-200 space-y-2 text-[15px]">
                   <Row k={`${money(rate)} × ${nights} night${nights > 1 ? 's' : ''}`} v={money(subtotal)} />
                   <Row k="Tourism levy (5%) & VAT (18%)" v={money(taxes)} />
-                  <div className="pt-3 mt-2 border-t border-sage-200"><Row k="Total" v={money(total)} bold /><p className="text-right text-xs text-forest-950/50">≈ {ugx(total)}</p></div>
+                  <div className="pt-3 mt-2 border-t border-sage-200"><Row k="Total" v={money(total)} bold />{pct < 100 && <p className="flex justify-between text-sm text-forest-800 mt-1"><span>Due now (30%)</span><span>{money(due)}</span></p>}</div>
                 </div>
               )}
             </div>
@@ -194,7 +206,7 @@ export default function SiteBook() {
           <div className="bg-white rounded-3xl p-9 w-full max-w-md text-center shadow-2xl">
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center" style={{ background: method.color, color: method.ink }}><method.icon className="w-8 h-8" /></div>
             <h3 className="font-display text-2xl text-forest-900 mt-5">{method.mobile ? `Approve on your phone` : 'Processing payment'}</h3>
-            <p className="text-forest-950/65 text-sm mt-1">{method.mobile ? `Enter your ${method.label} PIN to pay ${money(total)}` : `Charging ${money(total)} to your card`}</p>
+            <p className="text-forest-950/65 text-sm mt-1">{method.mobile ? `Enter your ${method.label} PIN to pay ${money(due)}` : `Charging ${money(due)} to your card`}</p>
             <ul className="mt-7 space-y-3 text-left text-sm">
               {steps.map((s, i) => (
                 <li key={s} className={`flex items-center gap-3 ${i > step ? 'opacity-30' : ''}`}>

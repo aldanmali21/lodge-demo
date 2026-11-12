@@ -144,7 +144,7 @@ const ACTION_LABELS = {
   create_reservation: 'created a reservation', check_in: 'checked in a guest', check_out: 'checked out a guest',
   record_payment: 'recorded a payment', add_folio_item: 'added a folio charge', complete_task: 'completed a housekeeping task',
   book_activity: 'booked an activity', create_activity: 'created an activity', create_room: 'added a room',
-  update_room_status: 'updated room status', pos_charge_to_room: 'added a POS charge to room', pos_cash_sale: 'processed a cash sale', online_booking: 'made an online booking',
+  update_room_status: 'updated room status', pos_charge_to_room: 'added a POS charge to room', pos_cash_sale: 'processed a cash sale', online_booking: 'made an online booking', website_enquiry: 'sent a website enquiry',
 }
 
 function filteredLogs(q) {
@@ -295,7 +295,7 @@ route('DELETE', '/rooms/:id', ({ params }) => {
 
 // Public guest website (the /site pages) — online booking with payment up front.
 route('POST', '/public/bookings', ({ body }) => {
-  const { guestName, guestEmail = '', guestPhone = '', checkinDate, checkoutDate, roomType, guests = 1, paymentMethod = 'MTN Mobile Money', currency = 'USD' } = body
+  const { guestName, guestEmail = '', guestPhone = '', checkinDate, checkoutDate, roomType, guests = 1, paymentMethod = 'MTN Mobile Money', currency = 'USD', depositPct = 100, requests = '' } = body
   if (!guestName || !checkinDate || !checkoutDate || !roomType) throw bad('guestName, roomType, checkinDate and checkoutDate are required.')
   const checkin = new Date(checkinDate); const checkout = new Date(checkoutDate)
   if (!(checkout > checkin)) throw bad('Check-out must be after check-in.')
@@ -321,10 +321,18 @@ route('POST', '/public/bookings', ({ body }) => {
   const subtotal = folio.totalAmount
   const grand = Math.round(subtotal * (1 + TAX_TOURISM + TAX_VAT) * 100) / 100
   const reference = `WEB-${String(reservation.id).padStart(5, '0')}`
-  db.payments.push({ id: nextId('payment'), folioId: folio.id, amount: grand, currency: 'USD', method: paymentMethod, reference: `Website booking ${reference}`, receivedBy: null, timestamp: iso() })
-  folio.status = 'paid'
-  audit('online_booking', 'reservation', reservation.id, { guestName, room: room.number, nights, paid: grand, method: paymentMethod }, null)
-  return { status: 201, data: { reference, reservationId: reservation.id, room: { number: room.number, type: room.type }, nights, subtotal, taxes: grand - subtotal, total: grand, paymentMethod } }
+  const pct = Number(depositPct) === 30 ? 30 : 100
+  const paid = Math.round(grand * pct) / 100
+  db.payments.push({ id: nextId('payment'), folioId: folio.id, amount: paid, currency: 'USD', method: paymentMethod, reference: `Website booking ${reference}${pct < 100 ? ' (30% deposit)' : ''}`, receivedBy: null, timestamp: iso() })
+  if (pct === 100) folio.status = 'paid'
+  audit('online_booking', 'reservation', reservation.id, { guestName, room: room.number, nights, paid, method: paymentMethod, deposit: pct < 100, requests }, null)
+  return { status: 201, data: { reference, reservationId: reservation.id, room: { number: room.number, type: room.type }, nights, subtotal, taxes: grand - subtotal, total: grand, paid, balance: grand - paid, depositPct: pct, paymentMethod } }
+})
+route('POST', '/public/enquiries', ({ body }) => {
+  const { name, email = '', phone = '', message = '' } = body
+  if (!name || !message) throw bad('Name and message are required.')
+  audit('website_enquiry', 'enquiry', nextId('enquiry'), { guestName: name, email, phone, message: String(message).slice(0, 200) }, null)
+  return { status: 201, data: { ok: true } }
 })
 
 // Reservations

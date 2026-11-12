@@ -25,7 +25,7 @@ const ACTION_LABELS = {
   create_reservation: 'Created reservation', check_in: 'Checked in guest',
   check_out: 'Checked out guest', record_payment: 'Recorded payment',
   add_folio_item: 'Added folio charge', complete_task: 'Completed task',
-  book_activity: 'Booked activity', online_booking: 'Online booking', create_room: 'Added room',
+  book_activity: 'Booked activity', online_booking: 'Online booking', website_enquiry: 'Website enquiry', create_room: 'Added room',
   pos_charge_to_room: 'POS charge to room', pos_cash_sale: 'Cash sale',
   invite_user: 'Invited user', update_user_role: 'Updated user role',
 }
