@@ -134,7 +134,7 @@ function financeRows(from, to) {
       id: `p-${p.id}`, entryType: 'income', category: p.method || 'Payment',
       description: p.reference || guestOfPayment(p) || 'Guest payment',
       amount: p.amount, currency: p.currency, entryDate: p.timestamp,
-      source: byId(db.users, p.receivedBy)?.name || 'Staff', method: p.method, origin: 'payment', bucket: 'income',
+      source: p.receivedBy == null ? 'Website (online)' : (byId(db.users, p.receivedBy)?.name || 'Staff'), method: p.method, origin: 'payment', bucket: 'income',
     })),
   ]
   return rows.sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
