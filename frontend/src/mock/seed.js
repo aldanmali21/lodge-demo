@@ -1,4 +1,4 @@
-// Static demo data for Twin Lakes Safari Lodge.
+// Static demo data for Lodge Demo.
 // All dates are generated relative to "today" so the demo always looks current.
 
 
@@ -13,12 +13,12 @@ export const DEMO_USER_ID = 1
 
 export function buildSeed() {
   const users = [
-    { id: 1, name: 'Aldan Mali', email: 'admin@twinlakes.demo', role: 'admin', createdAt: dayAt(-120) },
-    { id: 2, name: 'Rebecca Atuhaire', email: 'frontdesk@twinlakes.demo', role: 'frontdesk', createdAt: dayAt(-100) },
-    { id: 3, name: 'Moses Kiiza', email: 'pos@twinlakes.demo', role: 'pos', createdAt: dayAt(-90) },
-    { id: 4, name: 'Joel Tumusiime', email: 'guide@twinlakes.demo', role: 'guide', createdAt: dayAt(-90) },
-    { id: 5, name: 'Sarah Nabirye', email: 'housekeeping@twinlakes.demo', role: 'housekeeping', createdAt: dayAt(-80) },
-    { id: 6, name: 'Demo Viewer', email: 'viewer@twinlakes.demo', role: 'viewer', createdAt: dayAt(-30) },
+    { id: 1, name: 'Aldan Mali', email: 'admin@lodgedemo.example', role: 'admin', createdAt: dayAt(-120) },
+    { id: 2, name: 'Rebecca Atuhaire', email: 'frontdesk@lodgedemo.example', role: 'frontdesk', createdAt: dayAt(-100) },
+    { id: 3, name: 'Moses Kiiza', email: 'pos@lodgedemo.example', role: 'pos', createdAt: dayAt(-90) },
+    { id: 4, name: 'Joel Tumusiime', email: 'guide@lodgedemo.example', role: 'guide', createdAt: dayAt(-90) },
+    { id: 5, name: 'Sarah Nabirye', email: 'housekeeping@lodgedemo.example', role: 'housekeeping', createdAt: dayAt(-80) },
+    { id: 6, name: 'Demo Viewer', email: 'viewer@lodgedemo.example', role: 'viewer', createdAt: dayAt(-30) },
   ]
 
   const room = (id, number, type, capacity, defaultRate, status, housekeepingStatus) =>

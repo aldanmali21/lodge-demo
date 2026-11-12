@@ -94,8 +94,8 @@ export default function AppLayout() {
             <Mountain className="w-5 h-5" style={{ color: '#c8a96e' }} />
             <Mountain className="w-3.5 h-3.5 -ml-1" style={{ color: '#c8a96e' }} />
           </div>
-          <h1 className="font-display text-2xl font-bold text-white leading-tight">Twin Lakes</h1>
-          <p className="text-xs tracking-wider uppercase" style={{ color: '#9db87a' }}>Safari Lodge</p>
+          <h1 className="font-display text-2xl font-bold text-white leading-tight">Lodge Demo</h1>
+          <p className="text-xs tracking-wider uppercase" style={{ color: '#9db87a' }}>Management Demo</p>
         </div>
 
         {/* Navigation */}
@@ -159,7 +159,7 @@ export default function AppLayout() {
               />
             </button>
 
-            <span className="hidden sm:block text-sm font-medium" style={{ color: '#1c2b1e' }}>Twin Lakes Safari Lodge</span>
+            <span className="hidden sm:block text-sm font-medium" style={{ color: '#1c2b1e' }}>Lodge Demo</span>
           </div>
 
           <div className="flex items-center gap-2 lg:gap-3">

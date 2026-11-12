@@ -1,4 +1,4 @@
-// In-browser mock of the Twin Lakes REST API.
+// In-browser mock of the lodge REST API.
 // Replaces the Express + Prisma backend so the app runs as a pure static site.
 // State lives in memory and is mirrored to sessionStorage (resets in a new tab).
 import { buildSeed, POS_MENU, DEMO_USER_ID } from './seed'

@@ -17,7 +17,7 @@ const WRITE_ROLES = {
 }
 
 // Demo mode: no login. The visitor is always signed in as the lodge admin.
-const DEMO_USER = { id: 1, name: 'Aldan Mali', email: 'admin@twinlakes.demo', role: 'admin' }
+const DEMO_USER = { id: 1, name: 'Aldan Mali', email: 'admin@lodgedemo.example', role: 'admin' }
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(DEMO_USER)
