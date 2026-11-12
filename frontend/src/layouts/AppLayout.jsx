@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Calendar, FileText, Compass,
   UtensilsCrossed, Bed, Building2, Settings,
   Bell, Plus, Mountain, RotateCcw, Users,
-  AlignLeft, X, DoorOpen, BarChart3
+  AlignLeft, X, DoorOpen, BarChart3, Globe
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import NewBookingModal from '../components/NewBookingModal'
@@ -107,6 +107,14 @@ export default function AppLayout() {
 
         {/* Bottom */}
         <div className="px-3 pb-5 border-t border-white/10 pt-3 space-y-0.5">
+          <button
+            onClick={() => { navigate('/site'); setSidebarOpen(false) }}
+            title="Open the guest-facing website for this lodge"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/50 hover:text-white/90 hover:bg-white/5 transition-all w-full"
+          >
+            <Globe className="w-4 h-4" />
+            <span>Guest Website</span>
+          </button>
           <button
             onClick={() => { navigate('/settings'); setSidebarOpen(false) }}
             className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/50 hover:text-white/90 hover:bg-white/5 transition-all w-full"

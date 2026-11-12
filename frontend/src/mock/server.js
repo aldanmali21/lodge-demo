@@ -42,8 +42,8 @@ const dayKey = (d) => new Date(d).toISOString().slice(0, 10)
 const me = () => byId(db.users, DEMO_USER_ID)
 const brief = (u) => u && { id: u.id, name: u.name }
 
-function audit(action, objectType, objectId, details = {}) {
-  db.auditLogs.push({ id: nextId('log'), actorId: DEMO_USER_ID, action, objectType, objectId, details, createdAt: iso() })
+function audit(action, objectType, objectId, details = {}, actorId = DEMO_USER_ID) {
+  db.auditLogs.push({ id: nextId('log'), actorId, action, objectType, objectId, details, createdAt: iso() })
 }
 
 // Convert any payment/entry amount to USD for cross-currency totals.
@@ -144,7 +144,7 @@ const ACTION_LABELS = {
   create_reservation: 'created a reservation', check_in: 'checked in a guest', check_out: 'checked out a guest',
   record_payment: 'recorded a payment', add_folio_item: 'added a folio charge', complete_task: 'completed a housekeeping task',
   book_activity: 'booked an activity', create_activity: 'created an activity', create_room: 'added a room',
-  update_room_status: 'updated room status', pos_charge_to_room: 'added a POS charge to room', pos_cash_sale: 'processed a cash sale',
+  update_room_status: 'updated room status', pos_charge_to_room: 'added a POS charge to room', pos_cash_sale: 'processed a cash sale', online_booking: 'made an online booking',
 }
 
 function filteredLogs(q) {
@@ -157,6 +157,7 @@ function filteredLogs(q) {
   return logs
 }
 const withActor = (l) => {
+  if (l.actorId == null) return { ...l, actor: { id: 0, name: l.details?.guestName ? `${l.details.guestName} (website)` : 'Website guest', role: 'guest' } }
   const a = byId(db.users, l.actorId)
   return { ...l, actor: a && { id: a.id, name: a.name, role: a.role } }
 }
@@ -292,6 +293,40 @@ route('DELETE', '/rooms/:id', ({ params }) => {
   return { status: 204, data: null }
 })
 
+// Public guest website (the /site pages) — online booking with payment up front.
+route('POST', '/public/bookings', ({ body }) => {
+  const { guestName, guestEmail = '', guestPhone = '', checkinDate, checkoutDate, roomType, guests = 1, paymentMethod = 'MTN Mobile Money', currency = 'USD' } = body
+  if (!guestName || !checkinDate || !checkoutDate || !roomType) throw bad('guestName, roomType, checkinDate and checkoutDate are required.')
+  const checkin = new Date(checkinDate); const checkout = new Date(checkoutDate)
+  if (!(checkout > checkin)) throw bad('Check-out must be after check-in.')
+  const booked = new Set()
+  db.reservationRooms.forEach(rr => {
+    const r = byId(db.reservations, rr.reservationId)
+    if (['pending', 'confirmed', 'checked_in'].includes(r.status) && new Date(r.checkinDate) < checkout && new Date(r.checkoutDate) > checkin) booked.add(rr.roomId)
+  })
+  const room = sortBy(db.rooms.filter(r => r.type === roomType && !booked.has(r.id)), 'number')[0]
+  if (!room) throw new HttpError(409, 'Sorry, that room type was just booked for those dates.')
+  const nights = Math.max(1, Math.ceil((checkout - checkin) / 86400000))
+  const reservation = {
+    id: nextId('reservation'), guestName, guestContact: [guestPhone, guestEmail].filter(Boolean).join(' · '), status: 'confirmed', source: 'website',
+    guests: num(guests), checkinDate: checkin.toISOString(), checkoutDate: checkout.toISOString(), createdBy: null, createdAt: iso(),
+  }
+  db.reservations.push(reservation)
+  const folio = { id: reservation.id, reservationId: reservation.id, totalAmount: 0, currency: 'USD', status: 'open' }
+  db.folios.push(folio)
+  db.reservationRooms.push({ id: db.reservationRooms.length + 1000 + reservation.id, reservationId: reservation.id, roomId: room.id })
+  db.folioItems.push({ id: nextId('item'), folioId: folio.id, amount: room.defaultRate * nights, currency: 'USD', type: 'room', createdAt: iso(),
+    description: `${room.type} - Room ${room.number} (${nights} night${nights !== 1 ? 's' : ''})` })
+  recalcFolio(folio.id)
+  const subtotal = folio.totalAmount
+  const grand = Math.round(subtotal * (1 + TAX_TOURISM + TAX_VAT) * 100) / 100
+  const reference = `WEB-${String(reservation.id).padStart(5, '0')}`
+  db.payments.push({ id: nextId('payment'), folioId: folio.id, amount: grand, currency: 'USD', method: paymentMethod, reference: `Website booking ${reference}`, receivedBy: null, timestamp: iso() })
+  folio.status = 'paid'
+  audit('online_booking', 'reservation', reservation.id, { guestName, room: room.number, nights, paid: grand, method: paymentMethod }, null)
+  return { status: 201, data: { reference, reservationId: reservation.id, room: { number: room.number, type: room.type }, nights, subtotal, taxes: grand - subtotal, total: grand, paymentMethod } }
+})
+
 // Reservations
 route('GET', '/reservations', ({ query }) => {
   let list = db.reservations
@@ -389,7 +424,7 @@ route('GET', '/folios', ({ query }) => {
 route('GET', '/folios/:id', ({ params }) => {
   const f = byId(db.folios, params.id); if (!f) throw notFound('Folio not found.')
   const full = folioFull(f)
-  full.payments = sortBy(full.payments, 'timestamp').map(p => ({ ...p, receiver: brief(byId(db.users, p.receivedBy)) }))
+  full.payments = sortBy(full.payments, 'timestamp').map(p => ({ ...p, receiver: brief(byId(db.users, p.receivedBy)) || (p.receivedBy == null ? { id: 0, name: 'Website (online)' } : undefined) }))
   const subtotal = sum(full.items, i => i.amount)
   const tourismTax = subtotal * TAX_TOURISM
   const vat = subtotal * TAX_VAT
@@ -645,7 +680,7 @@ route('GET', '/finance/reconciliation/today', ({ query }) => {
   const existing = db.reconciliations.filter(r => new Date(r.date) >= start && new Date(r.date) <= end).pop()
   return {
     date: start.toISOString(), expected,
-    payments: list.map(p => ({ id: p.id, timestamp: p.timestamp, amount: p.amount, currency: p.currency, method: p.method, reference: p.reference, bucket: bucket(p.method), source: guestOfPayment(p) || p.reference || 'Walk-in / Other', staff: byId(db.users, p.receivedBy)?.name || 'Staff' })),
+    payments: list.map(p => ({ id: p.id, timestamp: p.timestamp, amount: p.amount, currency: p.currency, method: p.method, reference: p.reference, bucket: bucket(p.method), source: guestOfPayment(p) || p.reference || 'Walk-in / Other', staff: p.receivedBy == null ? 'Website (online)' : (byId(db.users, p.receivedBy)?.name || 'Staff') })),
     transactionCount: list.length,
     existing: existing ? { ...existing, closer: brief(byId(db.users, existing.closedBy)) } : null,
   }

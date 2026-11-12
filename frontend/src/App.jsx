@@ -16,6 +16,7 @@ import Settings from './pages/Settings'
 import Users from './pages/Users'
 import Rooms from './pages/Rooms'
 import Reports from './pages/Reports'
+import SiteApp from './site/SiteApp'
 
 function RoleDefaultRedirect() {
   const { user } = useAuth()
@@ -34,6 +35,9 @@ export default function App() {
           {/* Demo: no login or sign-up — straight into the app */}
           <Route path="/login" element={<Navigate to="/dashboard" replace />} />
           <Route path="/accept-invite" element={<Navigate to="/dashboard" replace />} />
+
+          {/* Public guest website for the demo lodge (shares the same in-browser data) */}
+          <Route path="/site/*" element={<SiteApp />} />
 
           {/* Authenticated app shell */}
           <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
