@@ -20,7 +20,8 @@ const ACTION_LABELS = {
   create_reservation: 'created a reservation', check_in: 'checked in a guest',
   check_out: 'checked out a guest', record_payment: 'recorded a payment',
   add_folio_item: 'added a folio charge', complete_task: 'completed a task',
-  book_activity: 'booked an activity',
+  book_activity: 'booked an activity', online_booking: 'made an online booking',
+  update_room_status: 'updated room status', pos_charge_to_room: 'added a POS charge',
 }
 
 function relativeTime(d) {

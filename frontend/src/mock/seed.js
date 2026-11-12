@@ -165,7 +165,7 @@ export function buildSeed() {
 
   const auditLogs = []
   const log = (actorId, action, objectType, objectId, details, offset, h) =>
-    auditLogs.push({ id: auditLogs.length + 1, actorId, action, objectType, objectId, details, createdAt: dayAt(offset, h) })
+    auditLogs.push({ id: auditLogs.length + 1, actorId, action, objectType, objectId, details, createdAt: new Date(Math.min(new Date(dayAt(offset, h)).getTime(), Date.now() - (24 - h) * 60000)).toISOString() })
   log(2, 'create_reservation', 'reservation', 4, { guestName: 'The Hartley Family' }, -3, 10)
   log(2, 'check_in', 'reservation', 3, { guestName: 'Amina & Daniel Kato' }, -2, 14)
   log(2, 'check_in', 'reservation', 1, { guestName: 'Eleanor Vance' }, -1, 14)
