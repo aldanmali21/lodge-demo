@@ -16,9 +16,9 @@ export default function SiteHome() {
         <img src="/site/hero.jpg" alt="Acacia tree at sunset over the savannah" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(13,26,15,.6) 0%, rgba(13,26,15,.25) 45%, rgba(13,26,15,.8) 100%)' }} />
         <div className="relative max-w-6xl mx-auto px-5 w-full pt-20">
-          <p className="text-gold-light tracking-[.3em] text-xs uppercase mb-5">Safari Lodge · Western Uganda</p>
+          <p className="text-gold-light tracking-[.3em] text-xs uppercase mb-5">{LODGE.kicker}</p>
           <h1 className="font-display text-white text-5xl md:text-7xl leading-[1.05] max-w-3xl">{LODGE.tagline}</h1>
-          <p className="text-white/85 text-lg mt-6 max-w-xl">Wake to hippos at the water’s edge, spend your days on game drives and your evenings around the fire.</p>
+          <p className="text-white/85 text-lg mt-6 max-w-xl">{LODGE.sub || 'Wake to hippos at the water’s edge, spend your days on game drives and your evenings around the fire.'}</p>
           <SearchBar stay={stay} onSubmit={go} className="mt-10 max-w-4xl" />
           <p className="mt-4 text-white/70 text-sm flex items-center gap-2"><Smartphone className="w-4 h-4 text-gold-light" /> Book online · Pay a 30% deposit with MTN MoMo, Airtel Money or card</p>
         </div>

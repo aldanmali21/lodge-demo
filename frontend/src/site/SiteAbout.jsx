@@ -23,7 +23,7 @@ export default function SiteAbout() {
       <section className="max-w-6xl mx-auto px-5 py-16 grid gap-12 md:grid-cols-2 items-center">
         <div>
           <SectionHead center={false} kicker="Who we are" title="A family-run lodge, small on purpose" />
-          <p className="mt-5 text-forest-950/70 leading-relaxed">{LODGE.name} began as a single guest house on the lake shore, built by a family who wanted visitors to see their home the way they do. Today we have ten rooms, a team of 30 from the surrounding villages, and the same promise: warm hosting, honest food and time in the wild.</p>
+          <p className="mt-5 text-forest-950/70 leading-relaxed">{LODGE.about || `${LODGE.name} began as a single guest house on the lake shore, built by a family who wanted visitors to see their home the way they do. Today we have ten rooms, a team of 30 from the surrounding villages, and the same promise: warm hosting, honest food and time in the wild.`}</p>
           <ul className="mt-6 space-y-3 text-forest-950/75 text-sm">
             <li className="flex gap-3"><Clock className="w-5 h-5 text-forest-600 shrink-0" />Check-in from 2:00 pm · Check-out by 10:00 am</li>
             <li className="flex gap-3"><Plane className="w-5 h-5 text-forest-600 shrink-0" />Airport and Kampala transfers arranged on request</li>

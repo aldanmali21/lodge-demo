@@ -8,7 +8,31 @@ export const LODGE = {
   whatsapp: '256700000000',
   email: 'stay@kingfisherlodge.example',
   place: 'Queen Elizabeth area, Western Uganda',
+  kicker: 'Safari Lodge · Western Uganda',
+  blurb: 'A small safari lodge on the shore of a quiet crater lake.',
 }
+
+// Per-prospect demo: open the site with ?lodge=royal-park to re-brand the same mock-up with another property's name.
+// The choice is kept for the browser session so it survives page navigation. Sample data only.
+const BRANDS = {
+  'royal-park': {
+    name: 'Royal Park Hotel',
+    short: 'Royal Park',
+    tagline: 'Comfortable stays in the heart of Jinja',
+    email: 'stay@royalpark.example',
+    place: 'Jinja, Uganda',
+    kicker: 'Hotel · Jinja',
+    blurb: 'A welcoming hotel in Jinja.',
+    sub: 'Book your room online, pay a deposit by Mobile Money, and arrive to a warm welcome.',
+    about: 'Royal Park Hotel welcomes guests to Jinja with comfortable rooms, honest food and warm hosting. This page is a free sample mock-up made by Lodgely to show how your own booking website could look, using sample rooms and prices.',
+  },
+}
+try {
+  const q = new URLSearchParams(window.location.search).get('lodge')
+  if (q) sessionStorage.setItem('lodge-brand', q)
+  const brand = BRANDS[q || sessionStorage.getItem('lodge-brand')]
+  if (brand) Object.assign(LODGE, brand)
+} catch { /* no browser storage: keep the default brand */ }
 
 const P = '/site/'
 const shared = [P + 'deck.jpg', P + 'lodge.jpg']
