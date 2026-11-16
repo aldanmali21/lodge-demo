@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Lock, Smartphone, CreditCard, CheckCircle2, ShieldCheck, CalendarDays, BedDouble, Loader2, Printer } from 'lucide-react'
 import api from '../lib/api'
 import SiteLayout from './SiteLayout'
-import { ROOM_INFO, fallbackInfo, TAX_RATE, money, fmtDate, nightsBetween, stamp } from './catalog'
+import { LODGE, ROOM_INFO, fallbackInfo, TAX_RATE, money, fmtDate, nightsBetween, stamp } from './catalog'
 
 const METHODS = [
   { id: 'MTN Mobile Money', label: 'MTN MoMo', sub: 'Pay from your phone', icon: Smartphone, color: '#ffcc00', ink: '#1a1a1a', mobile: true },
@@ -102,10 +102,10 @@ export default function SiteBook() {
               <Row k={`Room (${result.nights} night${result.nights > 1 ? 's' : ''})`} v={money(result.subtotal)} />
               <Row k="Tourism levy & VAT" v={money(result.taxes)} />
               <Row k={`Paid now with ${result.paymentMethod}`} v={money(result.paid)} bold />
-              {result.balance > 0 && <Row k="Balance due at the lodge" v={money(result.balance)} />}
+              {result.balance > 0 && <Row k={`Balance due at the ${LODGE.kicker.startsWith("Hotel") ? "hotel" : "lodge"}`} v={money(result.balance)} />}
               <p className="text-xs text-forest-950/50 mt-3">Demo payment — no real money was charged.</p>
               <div className="mt-2 flex flex-wrap gap-3">
-                <Link to="/site" className="px-6 py-3 rounded-full bg-forest-900 text-white text-sm font-medium">Back to the lodge</Link>
+                <Link to="/site" className="px-6 py-3 rounded-full bg-forest-900 text-white text-sm font-medium">Back to the {LODGE.kicker.startsWith('Hotel') ? 'hotel' : 'lodge'}</Link>
                 <button onClick={() => window.print()} className="px-6 py-3 rounded-full border border-forest-900/30 text-forest-900 text-sm font-medium flex items-center gap-2"><Printer className="w-4 h-4" />Print</button>
                 <Link to="/dashboard" className="px-6 py-3 rounded-full text-sm font-medium text-forest-950" style={{ background: '#c8a96e' }}>See it in the lodge system →</Link>
               </div>
@@ -144,7 +144,7 @@ export default function SiteBook() {
             <section className="bg-white rounded-2xl p-7 shadow-sm">
               <h2 className="font-display text-2xl text-forest-900 mb-5">2. Payment</h2>
               <div className="grid grid-cols-2 gap-3 mb-5">
-                {[[30, 'Pay 30% deposit', 'Balance at the lodge'], [100, 'Pay in full', 'Nothing to pay later']].map(([v, a, b]) => (
+                {[[30, 'Pay 30% deposit', `Balance at the ${LODGE.kicker.startsWith('Hotel') ? 'hotel' : 'lodge'}`], [100, 'Pay in full', 'Nothing to pay later']].map(([v, a, b]) => (
                   <button type="button" key={v} onClick={() => setPct(v)} className={`rounded-xl border-2 p-4 text-left transition ${pct === v ? 'border-forest-700 bg-sage-50' : 'border-sage-200 hover:border-sage-300'}`}>
                     <span className="block text-sm font-semibold text-forest-900">{a} · {money(total * v / 100)}</span><span className="block text-xs text-forest-950/55">{b}</span>
                   </button>

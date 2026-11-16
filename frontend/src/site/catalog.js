@@ -24,6 +24,20 @@ const BRANDS = {
     kicker: 'Hotel · Jinja',
     blurb: 'A welcoming hotel in Jinja.',
     sub: 'Book your room online, pay a deposit by Mobile Money, and arrive to a warm welcome.',
+    hero: '/site/deck.jpg',
+    heroAlt: 'Hotel pool and terrace',
+    welcome: 'Forty comfortable rooms and suites, a restaurant and bar open every day, a pool terrace, a conference room for meetings and events, and a front desk that knows Jinja and the Nile inside out. Close to town, the market and the river, and easy for business or leisure.',
+    stats: [['40', 'Rooms & suites'], ['4.7', 'Guest rating'], ['24/7', 'Front desk']],
+    features: [['pool', 'Pool terrace', 'Relax after the day'], ['food', 'Restaurant & bar', 'Open daily'], ['events', 'Meetings & events', 'Conference room'], ['wifi', 'Free Wi-Fi', 'In every room']],
+    roomsKicker: 'Stay with us', roomsSub: 'Live availability for your dates. Prices per room per night, in Ugandan shillings.',
+    roomsHero: 'Six room styles for business trips, weekends away and family stays in Jinja.',
+    roomNote: 'Every room has crisp linen, a hot-water shower, air conditioning or fan, a work desk and free Wi-Fi, a short walk from the restaurant and bar.',
+    expKicker: 'Hotel services', expTitle: 'More than a room', expSub: 'Book with your room, or ask the front desk when you arrive. Prices are per person unless stated.',
+    expHero: 'Dining, meetings, transfers and Nile outings, arranged by our front desk.',
+    diningTitle: 'Restaurant & bar', diningHead: 'Good food, any time of day', diningText: 'Our restaurant serves a full breakfast, business lunches and dinner, with a bar for evening drinks. Open to in-house guests and visitors from town, and we cater for vegetarian, vegan and gluten-free guests.',
+    stories: [['Easy to book online and the deposit by mobile money was simple. The room was clean and the front desk helped with our transfer to Entebbe.', 'Eleanor V.', 'Executive Suite'], ['We held a two-day team workshop in the conference room. Good Wi-Fi, lunch on time and friendly staff throughout.', 'Daniel K.', 'Deluxe Double'], ['Perfect base for a weekend on the Nile. We booked rafting through the front desk and the restaurant was great.', 'The Okello family', 'Family Room']],
+    ctaTitle: 'Ready for Jinja?', ctaSub: 'Reserve in minutes. Free cancellation up to 48 hours before arrival.',
+    aboutTitle: 'A town hotel with a warm welcome',
     about: 'Royal Park Hotel welcomes guests to Jinja with comfortable rooms, honest food and warm hosting. This page is a free sample mock-up made by Lodgely to show how your own booking website could look, using sample rooms and prices.',
   },
 }
@@ -104,3 +118,47 @@ export const fmtDate = (s) => new Date(`${s}T12:00:00`).toLocaleDateString('en-G
 export const nightsBetween = (a, b) => Math.max(0, Math.round((new Date(b) - new Date(a)) / 86400000))
 // Same arrival / departure times the lodge uses (check-in 14:00, check-out 10:00)
 export const stamp = (s, h) => new Date(`${s}T${String(h).padStart(2, '0')}:00:00`).toISOString()
+
+// Royal Park is a town hotel in Jinja, not a safari lodge: swap lodge-style content for hotel content.
+try {
+  if (LODGE.name === 'Royal Park Hotel') {
+    EXPERIENCES.splice(0, EXPERIENCES.length,
+      { id: 'dining', img: P + 'food-grill.jpg', title: 'Restaurant & bar', time: 'Daily', price: 0, text: 'Breakfast, business lunch and dinner, plus evening drinks at the bar. Charge it to your room or pay at the table.' },
+      { id: 'events', img: P + 'deck.jpg', title: 'Meetings & events', time: 'Half or full day', price: 25, text: 'A bright conference room for workshops, trainings and celebrations, with projector, Wi-Fi and catering on request.' },
+      { id: 'transfer', img: P + 'lodge.jpg', title: 'Airport & town transfers', time: 'On request', price: 40, text: 'Pick-ups from Entebbe Airport and Kampala, and rides around Jinja arranged by the front desk.' },
+      { id: 'nile', img: P + 'elephant.jpg', title: 'Source of the Nile boat trip', time: '2 hrs', price: 35, text: 'A relaxed boat trip to the source of the Nile with a guide, with birdlife and views along the river.' },
+      { id: 'rafting', img: P + 'safari.jpg', title: 'White-water rafting & adventure', time: 'Full day', price: 120, text: 'Rafting, kayaking and quad biking booked for you with trusted operators just outside town.' },
+      { id: 'tour', img: P + 'zebra.jpg', title: 'Jinja town & culture tour', time: 'Half day', price: 30, text: 'Markets, crafts, street food and the history of the town with a local guide.' },
+    )
+    MENU.splice(0, MENU.length,
+      { course: 'Breakfast', items: [['Full hotel breakfast', 'Eggs to order, sausage, toast, fruit, tea or coffee', 28000], ['Sunrise rolex', 'Chapati, eggs and fresh vegetables', 10000]] },
+      { course: 'Lunch & dinner', items: [['Grilled Nile perch', 'Lemon butter, rice or chips, kachumbari', 45000], ['Chicken or beef stew', 'Served with matoke, posho or rice', 32000], ['Club sandwich & chips', 'Chicken, egg, tomato, lettuce', 25000], ['Vegetable curry', 'Seasonal vegetables, coconut sauce, rice', 28000]] },
+      { course: 'Bar & dessert', items: [['Passion fruit juice or soda', 'Fresh or bottled', 6000], ['Local beer or house wine', 'By the bottle or glass', 8000], ['Ugandan coffee', 'Black or with milk', 7000], ['Chocolate cake', 'Slice with cream', 14000]] },
+    )
+    GALLERY.splice(0, GALLERY.length,
+      { src: P + 'deck.jpg', cat: 'Hotel', alt: 'Pool and terrace' },
+      { src: P + 'lodge.jpg', cat: 'Hotel', alt: 'Hotel exterior' },
+      { src: P + 'standard-double.jpg', cat: 'Rooms', alt: 'Standard double room' },
+      { src: P + 'deluxe-double.jpg', cat: 'Rooms', alt: 'Deluxe room' },
+      { src: P + 'executive.jpg', cat: 'Rooms', alt: 'Executive suite' },
+      { src: P + 'canopy.jpg', cat: 'Rooms', alt: 'Suite bedroom' },
+      { src: P + 'food-grill.jpg', cat: 'Dining', alt: 'Grilled skewers' },
+      { src: P + 'food-meat.jpg', cat: 'Dining', alt: 'Roasted meat' },
+      { src: P + 'food-rice.jpg', cat: 'Dining', alt: 'Spiced rice' },
+      { src: P + 'family.jpg', cat: 'Rooms', alt: 'Family room' },
+      { src: P + 'honeymoon.jpg', cat: 'Rooms', alt: 'Honeymoon suite' },
+      { src: P + 'standard-twin.jpg', cat: 'Rooms', alt: 'Twin room' },
+    )
+    ALL_AMENITIES.splice(0, ALL_AMENITIES.length, 'Hot-water shower', 'Free fast Wi-Fi', 'Air conditioning or fan', 'Work desk', 'Tea & coffee station', 'Daily housekeeping', 'In-room safe', 'Breakfast included', 'Airport transfer on request')
+    const hotel = {
+      'Standard Double': ['A comfortable, quiet room with a work desk, ideal for business trips and short stays.', ['Work desk', 'Free Wi-Fi', 'Breakfast included']],
+      'Standard Twin': ['Two single beds, ideal for colleagues or friends travelling together.', ['Work desk', 'Free Wi-Fi', 'Breakfast included']],
+      'Deluxe Double': ['More space and a sitting area, with a king bed and a balcony.', ['Balcony', 'Sitting area', 'Breakfast included']],
+      'Deluxe Twin': ['A spacious twin room with a sitting area and a balcony over the hotel grounds.', ['Balcony', 'Sitting area', 'Breakfast included']],
+      'Family Room': ['Space for the whole family with a separate sleeping area and a lounge corner.', ['Sleeps 4', 'Lounge area', 'Breakfast included']],
+      'Executive Suite': ['A suite with a lounge and a work area, ideal for longer stays and business guests.', ['Separate lounge', 'Work area', 'Breakfast included']],
+      'Honeymoon Suite': ['Our most romantic suite: a king bed, a private terrace and a welcome treat on arrival.', ['Private terrace', 'Welcome treat', 'Breakfast included']],
+    }
+    for (const [k, [blurb, perks]] of Object.entries(hotel)) Object.assign(ROOM_INFO[k], { blurb, perks })
+  }
+} catch { /* keep the default content */ }

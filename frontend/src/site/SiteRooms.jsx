@@ -1,6 +1,6 @@
 import SiteLayout from './SiteLayout'
 import { SearchBar, RoomCard, PageHero, useStay, useRoomTypes } from './shared'
-import { fmtDate } from './catalog'
+import { fmtDate, LODGE } from './catalog'
 import { Link } from 'react-router-dom'
 
 export default function SiteRooms() {
@@ -8,7 +8,7 @@ export default function SiteRooms() {
   const types = useRoomTypes(stay.from, stay.to, stay.guests)
   return (
     <SiteLayout>
-      <PageHero img="/site/canopy.jpg" kicker="Stay with us" title="Rooms & suites" sub="Seven room styles, from garden-view doubles to a private-deck honeymoon suite." />
+      <PageHero img="/site/canopy.jpg" kicker="Stay with us" title="Rooms & suites" sub={LODGE.roomsHero || "Seven room styles, from garden-view doubles to a private-deck honeymoon suite."} />
       <section className="bg-sage-50 pb-20">
         <div className="max-w-6xl mx-auto px-5">
           <SearchBar stay={stay} cta="Update" className="-mt-10 relative z-10 max-w-4xl mx-auto" />

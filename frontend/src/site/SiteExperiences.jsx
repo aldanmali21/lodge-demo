@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom'
 import { Clock } from 'lucide-react'
 import SiteLayout, { waLink } from './SiteLayout'
 import { PageHero, SectionHead } from './shared'
-import { EXPERIENCES, ugx } from './catalog'
+import { EXPERIENCES, LODGE, ugx } from './catalog'
 
 export default function SiteExperiences() {
   return (
     <SiteLayout>
-      <PageHero img="/site/safari.jpg" kicker="Beyond your room" title="Experiences" sub="Guided by people who grew up here. Book with your room, or ask the front desk when you arrive." />
+      <PageHero img={LODGE.hero || "/site/safari.jpg"} kicker={LODGE.expKicker || "Beyond your room"} title={LODGE.expTitle || "Experiences"} sub={LODGE.expHero || "Guided by people who grew up here. Book with your room, or ask the front desk when you arrive."} />
       <section className="max-w-6xl mx-auto px-5 py-16">
-        <SectionHead kicker="Safari & more" title="Make every day different" sub="Prices are per person. In-house guests can add any experience to their room bill and pay at check-out." />
+        <SectionHead kicker={LODGE.expKicker ? "Hotel services" : "Safari & more"} title={LODGE.expTitle ? "Make your stay easier" : "Make every day different"} sub={LODGE.expSub || "Prices are per person. In-house guests can add any experience to their room bill and pay at check-out."} />
         <div className="mt-12 grid gap-7 md:grid-cols-2">
           {EXPERIENCES.map((e, i) => (
             <article key={e.id} className="bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col sm:flex-row">

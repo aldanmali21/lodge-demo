@@ -1,16 +1,16 @@
 import { Link } from 'react-router-dom'
 import SiteLayout from './SiteLayout'
 import { PageHero, SectionHead } from './shared'
-import { MENU, ugxRaw } from './catalog'
+import { MENU, LODGE, ugxRaw } from './catalog'
 
 export default function SiteDining() {
   return (
     <SiteLayout>
-      <PageHero img="/site/food-meat.jpg" kicker="Restaurant & bar" title="Dining at the lake" sub="Seasonal, local and cooked over fire. Open to in-house guests and day visitors." />
+      <PageHero img="/site/food-meat.jpg" kicker="Restaurant & bar" title={LODGE.diningTitle || "Dining at the lake"} sub={LODGE.diningTitle ? "Breakfast, lunch, dinner and drinks. Open to in-house guests and day visitors." : "Seasonal, local and cooked over fire. Open to in-house guests and day visitors."} />
       <section className="max-w-6xl mx-auto px-5 py-16 grid gap-12 lg:grid-cols-[1fr_1.2fr] items-start">
         <div>
-          <SectionHead center={false} kicker="From our kitchen" title="What the garden grew this morning" />
-          <p className="mt-5 text-forest-950/70 leading-relaxed">Our chefs cook with vegetables from the lodge garden, fish from the lake and meat from neighbouring farms. Dinner is served on the deck or around the fire, and we happily cater for vegetarian, vegan and gluten-free guests.</p>
+          <SectionHead center={false} kicker="From our kitchen" title={LODGE.diningHead || "What the garden grew this morning"} />
+          <p className="mt-5 text-forest-950/70 leading-relaxed">{LODGE.diningText || "Our chefs cook with vegetables from the lodge garden, fish from the lake and meat from neighbouring farms. Dinner is served on the deck or around the fire, and we happily cater for vegetarian, vegan and gluten-free guests."}</p>
           <div className="mt-6 grid grid-cols-2 gap-3">
             <img src="/site/food-grill.jpg" alt="Grilled skewers" className="rounded-xl h-44 w-full object-cover" loading="lazy" />
             <img src="/site/food-rice.jpg" alt="Spiced rice and plantain" className="rounded-xl h-44 w-full object-cover" loading="lazy" />

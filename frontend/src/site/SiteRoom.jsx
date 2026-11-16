@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { BedDouble, Maximize2, Users, Check, ChevronLeft } from 'lucide-react'
 import SiteLayout from './SiteLayout'
 import { SearchBar, useStay, useRoomTypes, stayQuery } from './shared'
-import { typeFromSlug, ROOM_INFO, ALL_AMENITIES, money, TAX_RATE, fmtDate } from './catalog'
+import { LODGE, typeFromSlug, ROOM_INFO, ALL_AMENITIES, money, TAX_RATE, fmtDate } from './catalog'
 
 export default function SiteRoom() {
   const { slug } = useParams()
@@ -32,7 +32,7 @@ export default function SiteRoom() {
               <span className="flex items-center gap-1.5"><Maximize2 className="w-4 h-4" />{info.size}</span>
               {t && <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />Sleeps {t.capacity}</span>}
             </p>
-            <p className="mt-5 text-forest-950/75 leading-relaxed text-lg">{info.blurb} Every room has crisp linen, hot-water rain showers and a quiet spot to watch the light change over the lake.</p>
+            <p className="mt-5 text-forest-950/75 leading-relaxed text-lg">{info.blurb} {LODGE.roomNote || 'Every room has crisp linen, hot-water rain showers and a quiet spot to watch the light change over the lake.'}</p>
             <h2 className="font-display text-2xl text-forest-900 mt-8">What’s included</h2>
             <ul className="mt-4 grid sm:grid-cols-2 gap-2.5">
               {[...info.perks, ...ALL_AMENITIES.filter(a => !info.perks.includes(a))].slice(0, 10).map(p => <li key={p} className="flex items-center gap-2 text-forest-950/80"><Check className="w-4 h-4 text-forest-600" />{p}</li>)}

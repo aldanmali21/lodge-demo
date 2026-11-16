@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import SiteLayout from './SiteLayout'
 import { PageHero } from './shared'
-import { GALLERY } from './catalog'
+import { GALLERY, LODGE } from './catalog'
 
-const CATS = ['All', 'Rooms', 'Dining', 'Wildlife', 'Lodge', 'Landscape']
+const CATS = LODGE.name === 'Royal Park Hotel' ? ['All', 'Rooms', 'Dining', 'Hotel'] : ['All', 'Rooms', 'Dining', 'Wildlife', 'Lodge', 'Landscape']
 export default function SiteGallery() {
   const [cat, setCat] = useState('All')
   const [lb, setLb] = useState(null)
