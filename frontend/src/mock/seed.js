@@ -35,6 +35,18 @@ export function buildSeed() {
     room(9, 'R204', 'Executive Suite', 2, 320, 'available', 'dirty'),
     room(10, 'R205', 'Honeymoon Suite', 2, 380, 'occupied', 'clean'),
   ]
+  // Royal Park Hotel (Jinja) demo: use the two room options and prices listed on its Google Maps page
+  // (1 double bed UGX 144,822; 1 king bed UGX 186,200, both with breakfast).
+  try {
+    if (sessionStorage.getItem('lodge-brand') === 'royal-park') {
+      rooms.forEach((r) => {
+        const king = [4, 5, 8, 9, 10].includes(r.id)
+        r.type = king ? 'Deluxe Double' : 'Standard Double'
+        r.capacity = 2
+        r.defaultRate = king ? 186200 / 3700 : 144822 / 3700
+      })
+    }
+  } catch { /* keep the default rooms */ }
 
   // [id, guest, contact, status, checkinOffset, checkoutOffset, roomIds]
   const resDefs = [
