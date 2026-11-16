@@ -38,6 +38,8 @@ export function buildSeed() {
   // Royal Park Hotel (Jinja) demo: use the two room options and prices listed on its Google Maps page
   // (1 double bed UGX 144,822; 1 king bed UGX 186,200, both with breakfast).
   try {
+    const q = new URLSearchParams(window.location.search).get('lodge')
+    if (q) sessionStorage.setItem('lodge-brand', q)
     if (sessionStorage.getItem('lodge-brand') === 'royal-park') {
       rooms.forEach((r) => {
         const king = [4, 5, 8, 9, 10].includes(r.id)
