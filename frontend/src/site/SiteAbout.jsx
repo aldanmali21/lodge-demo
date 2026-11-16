@@ -19,7 +19,7 @@ export default function SiteAbout() {
   }
   return (
     <SiteLayout>
-      <PageHero img="/site/lodge.jpg" kicker="Our story" title="About & contact" />
+      <PageHero img={LODGE.name === 'Royal Park Hotel' ? LODGE.hero : "/site/lodge.jpg"} kicker="Our story" title="About & contact" />
       <section className="max-w-6xl mx-auto px-5 py-16 grid gap-12 md:grid-cols-2 items-center">
         <div>
           <SectionHead center={false} kicker="Who we are" title={LODGE.aboutTitle || "A family-run lodge, small on purpose"} />
@@ -30,7 +30,7 @@ export default function SiteAbout() {
             <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-forest-600 shrink-0" />Free cancellation up to 48 hours before arrival; 30% deposit secures your room</li>
           </ul>
         </div>
-        <img src="/site/safari.jpg" alt="Game drive" className="rounded-2xl shadow-xl w-full h-[380px] object-cover" />
+        <img src={LODGE.name === 'Royal Park Hotel' ? LODGE.hero : "/site/safari.jpg"} alt="Hotel" className="rounded-2xl shadow-xl w-full h-[380px] object-cover" />
       </section>
 
       <section className="bg-sage-50 py-16">

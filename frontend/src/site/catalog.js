@@ -159,6 +159,21 @@ try {
       'Executive Suite': ['A suite with a lounge and a work area, ideal for longer stays and business guests.', ['Separate lounge', 'Work area', 'Breakfast included']],
       'Honeymoon Suite': ['Our most romantic suite: a king bed, a private terrace and a welcome treat on arrival.', ['Private terrace', 'Welcome treat', 'Breakfast included']],
     }
+    const G = (k) => 'https://lh3.googleusercontent.com/' + k + '=w1400-h933-k-no'
+    const RP = {court: G('gps-cs-s/ANWiy9RaSTRFJuYVqJT8_JZLJuq2r2LZFIQeNUlh_OQwO-11d3v5Tdzh8zrCmiol3RRlOhrcB67GP-4u3LKHI-zPT8cbuFv1lzKXFO_zZ9HLZc4KlL9Kdl5PECFHPwtQQb2ssAgj2slsQw'),twin: G('gps-cs-s/ANWiy9TfP3wrVPcHk9C7s9Z8QEKE0J1KEmHQ65wsZh_oJ_otq3iLLFXZENnVwQLct9iczgmy8wZUnu4e54M0B75aSrAdHN4DnfwOOARAlNyBP8TGyZJQpWJ-OrcbtsI7IDiRRLgORqZCMBy1xOat'),bath: G('gps-cs-s/ANWiy9TDgTGxwApamXYFIZhjd_0H1uj6Bo5G9AwuI538k0zo6hOh5BhZ3M_M7JiOyA_ECvvuJsSOxFbIsD9txubZacfbraO45SzjWVWLblmUjcPZ11Ws3N3nyIKILBBVduNDhPmHupJKTw'),bed: G('gps-cs-s/ANWiy9SyVNAvh_hfuBmrTBTJCBaGnel281s8yFbC_txjMFIQ2S1-PTIQS721Led3ZOf4Unpt2svCfKSBSo_tb5GW3xMVZCFHN63fPke2S99rEXWZ0V9xIw8ZXZL6Y1x9ELZ4j7fNrP0'),food: G('gps-cs-s/ANWiy9RmTbp7FqdlNDqCHFiu-cI8fsUMc81Ip1cZ9reukk09V_rU3sHWnBfcY3-MrlwezIYmTacTruvXjZL8w2_qlPy7o2f3xx_jsdQiwl63qmTpN39ocZQtGS3Q4vscvJ-zc_U-fCA'),x6: G('gps-cs-s/ANWiy9SfmmlnJIO7oCGnBLVV2uPN7Os7EegDOykKgsXz4uEm1uAnJz9TPDkk6Q0ovT0OuDXs3ewoBh62N2504TP8niauFzH3XgrGzSd0qoCLmGK8FPV7GwvR0UA0gKA6JS8xWx3ELZxhKw')}
+    LODGE.hero = RP.court
+    // Real photos of the hotel, from its Google Maps listing
+    const rp = { 'Standard Double': RP.bed, 'Standard Twin': RP.twin, 'Deluxe Double': RP.x6, 'Deluxe Twin': RP.twin, 'Family Room': RP.x6, 'Executive Suite': RP.bed, 'Honeymoon Suite': RP.x6 }
+    for (const [k, p] of Object.entries(rp)) Object.assign(ROOM_INFO[k], { photo: p, gallery: [p, RP.bath, RP.court] })
+    EXPERIENCES.forEach(e => { e.img = ({ dining: RP.food, events: RP.court, transfer: RP.court, nile: RP.court, rafting: RP.court, tour: RP.court })[e.id] })
+    GALLERY.splice(0, GALLERY.length,
+      { src: RP.court, cat: 'Hotel', alt: 'Hotel courtyard and reception' },
+      { src: RP.twin, cat: 'Rooms', alt: 'Twin room' },
+      { src: RP.bed, cat: 'Rooms', alt: 'Double room' },
+      { src: RP.x6, cat: 'Rooms', alt: 'Room' },
+      { src: RP.bath, cat: 'Rooms', alt: 'Bathroom' },
+      { src: RP.food, cat: 'Dining', alt: 'Restaurant dishes' },
+    )
     for (const [k, [blurb, perks]] of Object.entries(hotel)) Object.assign(ROOM_INFO[k], { blurb, perks })
   }
 } catch { /* keep the default content */ }
