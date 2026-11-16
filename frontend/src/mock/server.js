@@ -1,6 +1,7 @@
 // In-browser mock of the lodge REST API.
 // Replaces the Express + Prisma backend so the app runs as a pure static site.
 // State lives in memory and is mirrored to sessionStorage (resets in a new tab).
+import { extraGuestUsd } from '../site/catalog'
 import { buildSeed, POS_MENU, DEMO_USER_ID } from './seed'
 
 const STORAGE_KEY = 'tl_demo_db_v1'
@@ -315,7 +316,7 @@ route('POST', '/public/bookings', ({ body }) => {
   const folio = { id: reservation.id, reservationId: reservation.id, totalAmount: 0, currency: 'USD', status: 'open' }
   db.folios.push(folio)
   db.reservationRooms.push({ id: db.reservationRooms.length + 1000 + reservation.id, reservationId: reservation.id, roomId: room.id })
-  db.folioItems.push({ id: nextId('item'), folioId: folio.id, amount: room.defaultRate * nights, currency: 'USD', type: 'room', createdAt: iso(),
+  db.folioItems.push({ id: nextId('item'), folioId: folio.id, amount: (room.defaultRate + extraGuestUsd(guests)) * nights, currency: 'USD', type: 'room', createdAt: iso(),
     description: `${room.type} - Room ${room.number} (${nights} night${nights !== 1 ? 's' : ''})` })
   recalcFolio(folio.id)
   const subtotal = folio.totalAmount

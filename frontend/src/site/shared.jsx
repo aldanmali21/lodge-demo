@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { CalendarDays, Users, Search, BedDouble, Maximize2, Check } from 'lucide-react'
 import api from '../lib/api'
-import { ROOM_INFO, fallbackInfo, money, toInputDate, addDays, nightsBetween, stamp, slugOf } from './catalog'
+import { extraGuestUsd, LODGE, ROOM_INFO, fallbackInfo, money, toInputDate, addDays, nightsBetween, stamp, slugOf } from './catalog'
 
 // Stay dates + guests live in the URL so they carry across pages.
 export function useStay() {
@@ -39,7 +39,7 @@ export function useRoomTypes(from, to, guests = 1) {
     if (!available) return null
     const map = new Map()
     available.forEach(r => {
-      const t = map.get(r.type) || { type: r.type, rate: r.defaultRate, capacity: r.capacity, count: 0 }
+      const t = map.get(r.type) || { type: r.type, rate: r.defaultRate + extraGuestUsd(guests), capacity: r.capacity, count: 0 }
       t.count += 1; map.set(r.type, t)
     })
     return [...map.values()].filter(t => t.capacity >= guests).sort((a, b) => a.rate - b.rate)
@@ -100,7 +100,7 @@ export function RoomCard({ t, stay }) {
         </ul>
         <div className="mt-auto pt-6 flex items-end justify-between gap-3">
           <div><span className="font-display text-2xl text-forest-900">{money(t.rate)}</span><span className="text-xs text-forest-950/60"> / night</span>
-            <p className="text-[11px] text-forest-950/50">taxes &amp; levies extra</p></div>
+            <p className="text-[11px] text-forest-950/50">taxes &amp; levies extra{LODGE.extraGuest && stay.guests > 2 ? ` · incl. ${stay.guests - 2} extra guest${stay.guests > 3 ? 's' : ''}` : ''}</p></div>
           <div className="flex gap-2">
             <Link to={`/site/rooms/${slugOf(t.type)}?${q}`} className="px-4 py-2.5 rounded-full border border-forest-900/25 text-forest-900 text-sm font-medium hover:bg-sage-50">Details</Link>
             <button onClick={() => navigate(`/site/book?type=${encodeURIComponent(t.type)}&${q}`)} className="px-4 py-2.5 rounded-full bg-forest-900 text-white text-sm font-medium hover:bg-forest-800 transition">Book</button>

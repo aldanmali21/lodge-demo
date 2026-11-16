@@ -44,7 +44,7 @@ export function buildSeed() {
       rooms.forEach((r) => {
         const king = [4, 5, 8, 9, 10].includes(r.id)
         r.type = king ? 'Deluxe Double' : 'Standard Double'
-        r.capacity = 2
+        r.capacity = 4
         r.defaultRate = king ? 186200 / 3700 : 144822 / 3700
       })
     }

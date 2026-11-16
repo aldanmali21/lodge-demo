@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Lock, Smartphone, CreditCard, CheckCircle2, ShieldCheck, CalendarDays, BedDouble, Loader2, Printer } from 'lucide-react'
 import api from '../lib/api'
 import SiteLayout from './SiteLayout'
-import { LODGE, ROOM_INFO, fallbackInfo, TAX_RATE, money, fmtDate, nightsBetween, stamp } from './catalog'
+import { extraGuestUsd, LODGE, ROOM_INFO, fallbackInfo, TAX_RATE, money, fmtDate, nightsBetween, stamp } from './catalog'
 
 const METHODS = [
   { id: 'MTN Mobile Money', label: 'MTN MoMo', sub: 'Pay from your phone', icon: Smartphone, color: '#ffcc00', ink: '#1a1a1a', mobile: true },
@@ -43,7 +43,7 @@ export default function SiteBook() {
   }, [type, from, to])
 
   const info = ROOM_INFO[type] || fallbackInfo
-  const rate = room?.defaultRate || 0
+  const rate = room ? room.defaultRate + extraGuestUsd(guests) : 0
   const subtotal = rate * nights
   const taxes = subtotal * TAX_RATE
   const total = subtotal + taxes

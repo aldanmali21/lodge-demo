@@ -28,6 +28,7 @@ const BRANDS = {
     sub: 'Book your room online, pay a deposit by Mobile Money, and arrive to a warm welcome.',
     hero: '/site/deck.jpg',
     heroAlt: 'Hotel pool and terrace',
+    extraGuest: 30000, // UGX per extra guest per night above 2 (demo assumption)
     welcome: 'Comfortable air-conditioned rooms with breakfast, free Wi-Fi and free parking, a pool, and a front desk that knows Jinja and the Nile inside out. In the centre of town on Kutch Road, close to the market and the river, and easy for business or leisure.',
     stats: [['4.1', 'Google rating'], ['146', 'Guest reviews'], ['24/7', 'Front desk']],
     features: [['pool', 'Pool', 'Relax after the day'], ['food', 'Free breakfast', 'Included with your room'], ['events', 'Free parking', 'On site'], ['wifi', 'Free Wi-Fi', 'In every room']],
@@ -110,6 +111,8 @@ const grp = (n) => Math.round(n).toLocaleString('en-US')
 export const ugx = (usd) => `UGX ${grp(usd * UGX_RATE)}`      // from a USD amount
 export const ugxRaw = (n) => `UGX ${grp(n)}`                   // already UGX
 export const money = ugx
+// USD per night added for guests beyond 2 (only when the brand sets an extra-guest charge)
+export const extraGuestUsd = (guests) => (LODGE.extraGuest ? Math.max(0, Number(guests) - 2) * LODGE.extraGuest / UGX_RATE : 0)
 
 export const toInputDate = (d) => {
   const x = new Date(d); x.setMinutes(x.getMinutes() - x.getTimezoneOffset())
