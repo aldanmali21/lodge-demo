@@ -62,7 +62,7 @@ export default function SiteLayout({ children, solid }) {
         <div className="max-w-6xl mx-auto px-5 py-14 grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <Logo light />
-            <p className="mt-4 text-sm leading-relaxed max-w-sm">{LODGE.blurb} {LODGE.name} is a sample lodge made for demonstration purposes.</p>
+            <p className="mt-4 text-sm leading-relaxed max-w-sm">{LODGE.blurb} {LODGE.name} is a sample website made for demonstration purposes.</p>
           </div>
           <div className="text-sm space-y-3">
             <p className="font-display text-white text-lg mb-1">Get in touch</p>

@@ -23,6 +23,7 @@ const BRANDS = {
     place: '32 Kutch Rd, Jinja, Uganda',
     phone: '+256 776 501 879',
     whatsapp: '256776501879',
+    hotel: true,
     kicker: 'Hotel · Jinja',
     blurb: 'A welcoming hotel in Jinja.',
     sub: 'Book your room online, pay a deposit by Mobile Money, and arrive to a warm welcome.',
@@ -42,6 +43,40 @@ const BRANDS = {
     ctaTitle: 'Ready for Jinja?', ctaSub: 'Reserve in minutes. Free cancellation up to 48 hours before arrival.',
     aboutTitle: 'A town hotel with a warm welcome',
     about: 'Royal Park Hotel welcomes guests to Jinja with comfortable rooms, honest food and warm hosting. This page is a free sample mock-up made by Lodgely to show how your own booking website could look, using sample rooms and prices.',
+  },
+  secrets: {
+    name: 'Secrets Guest House',
+    short: 'Secrets',
+    hotel: true,
+    secrets: true,
+    tagline: 'Your quiet garden retreat in Entebbe',
+    email: 'stay@secretsguesthouse.example',
+    place: 'Plot 23 Kyanvubu Road, Entebbe, Uganda',
+    phone: '+256 779 273 979',
+    whatsapp: '256779273979',
+    kicker: 'Guest House · Entebbe',
+    blurb: 'A quiet, welcoming garden guest house a short drive from Entebbe International Airport.',
+    sub: 'Rest easy before or after your flight. Book your room online, pay a deposit by Mobile Money, and we will be waiting with the gate open.',
+    hero: '/site/canopy.jpg',
+    heroAlt: 'Guest room with mosquito nets and warm wood floors',
+    welcomeTitle: 'A calm place to land in Entebbe',
+    welcomeImg: '/site/deluxe-double.jpg',
+    welcomeAlt: 'Deluxe guest room',
+    servicesTitle: 'Guest services',
+    extraGuest: 25000,
+    welcome: 'Secrets Guest House is a small, calm place to land. Spotless rooms with comfortable beds, a peaceful garden, home-style breakfast and a team that will arrange your airport pick-up, a late check-in after a delayed flight, or a day out in Entebbe. Guests rate us 4.5 on Google across more than 200 reviews, and most of them tell us the same thing: the staff made the difference.',
+    stats: [['4.5', 'Google rating'], ['219', 'Guest reviews'], ['24/7', 'Airport pick-ups']],
+    features: [['pool', 'Peaceful garden', 'Quiet residential street'], ['food', 'Home-style breakfast', 'Fresh, local, made to order'], ['events', 'Airport shuttle', 'Pick-up & drop-off on request'], ['wifi', 'Free Wi-Fi', 'In every room']],
+    roomsKicker: 'Stay with us', roomsSub: 'Live availability for your dates. Prices per room per night, in Ugandan shillings.',
+    roomsHero: 'Clean, comfortable rooms in a quiet garden setting, minutes from the airport.',
+    roomNote: 'Every room has crisp linen, mosquito nets, a hot-water shower, free Wi-Fi and daily housekeeping, with breakfast served in the garden dining area.',
+    expKicker: 'Guest services', expTitle: 'We take care of the details', expSub: 'Arrange with your booking, or ask the front desk. Prices are per person unless stated.',
+    expHero: 'Airport transfers, meals, laundry and day trips around Entebbe, arranged by our team.',
+    diningTitle: 'Meals & garden', diningHead: 'Breakfast, lunch and dinner', diningText: 'Home-style Ugandan and international dishes, cooked fresh and served in the garden or in your room. Tell us about any dietary needs when you book.',
+    stories: [['The staff were so helpful when our flight changed. They moved our booking without fuss and the breakfast was excellent.', 'Guest review', 'Paraphrased from Google'], ['Very clean, comfortable beds and a peaceful garden. Easy to arrange our airport transfer.', 'Guest review', 'Paraphrased from Google'], ['Friendly people, great local food and a quiet street. Exactly what we needed after a long journey.', 'Guest review', 'Paraphrased from Google']],
+    ctaTitle: 'Landing in Entebbe?', ctaSub: 'Reserve in minutes and we will plan your arrival with you.',
+    aboutTitle: 'A calm, caring place to stay',
+    about: 'Secrets Guest House welcomes travellers to Entebbe with clean rooms, honest food and genuine hospitality. This page is a free sample mock-up made by Lodgely to show how your own booking website could look. Rooms, prices and photos are samples to be replaced with your own.',
   },
 }
 try {
@@ -126,7 +161,7 @@ export const stamp = (s, h) => new Date(`${s}T${String(h).padStart(2, '0')}:00:0
 
 // Royal Park is a town hotel in Jinja, not a safari lodge: swap lodge-style content for hotel content.
 try {
-  if (LODGE.name === 'Royal Park Hotel') {
+  if (LODGE.hotel) {
     EXPERIENCES.splice(0, EXPERIENCES.length,
       { id: 'dining', img: P + 'food-grill.jpg', title: 'Restaurant & bar', time: 'Daily', price: 0, text: 'Breakfast, business lunch and dinner, plus evening drinks at the bar. Charge it to your room or pay at the table.' },
       { id: 'events', img: P + 'deck.jpg', title: 'Meetings & events', time: 'Half or full day', price: 25, text: 'A bright conference room for workshops, trainings and celebrations, with projector, Wi-Fi and catering on request.' },
@@ -164,21 +199,63 @@ try {
       'Executive Suite': ['A suite with a lounge and a work area, ideal for longer stays and business guests.', ['Separate lounge', 'Work area', 'Breakfast included']],
       'Honeymoon Suite': ['Our most romantic suite: a king bed, a private terrace and a welcome treat on arrival.', ['Private terrace', 'Welcome treat', 'Breakfast included']],
     }
-    const G = (k) => 'https://lh3.googleusercontent.com/' + k + '=w1400-h933-k-no'
-    const RP = {court: G('gps-cs-s/ANWiy9RaSTRFJuYVqJT8_JZLJuq2r2LZFIQeNUlh_OQwO-11d3v5Tdzh8zrCmiol3RRlOhrcB67GP-4u3LKHI-zPT8cbuFv1lzKXFO_zZ9HLZc4KlL9Kdl5PECFHPwtQQb2ssAgj2slsQw'),twin: G('gps-cs-s/ANWiy9TfP3wrVPcHk9C7s9Z8QEKE0J1KEmHQ65wsZh_oJ_otq3iLLFXZENnVwQLct9iczgmy8wZUnu4e54M0B75aSrAdHN4DnfwOOARAlNyBP8TGyZJQpWJ-OrcbtsI7IDiRRLgORqZCMBy1xOat'),bath: G('gps-cs-s/ANWiy9TDgTGxwApamXYFIZhjd_0H1uj6Bo5G9AwuI538k0zo6hOh5BhZ3M_M7JiOyA_ECvvuJsSOxFbIsD9txubZacfbraO45SzjWVWLblmUjcPZ11Ws3N3nyIKILBBVduNDhPmHupJKTw'),bed: G('gps-cs-s/ANWiy9SyVNAvh_hfuBmrTBTJCBaGnel281s8yFbC_txjMFIQ2S1-PTIQS721Led3ZOf4Unpt2svCfKSBSo_tb5GW3xMVZCFHN63fPke2S99rEXWZ0V9xIw8ZXZL6Y1x9ELZ4j7fNrP0'),food: G('gps-cs-s/ANWiy9RmTbp7FqdlNDqCHFiu-cI8fsUMc81Ip1cZ9reukk09V_rU3sHWnBfcY3-MrlwezIYmTacTruvXjZL8w2_qlPy7o2f3xx_jsdQiwl63qmTpN39ocZQtGS3Q4vscvJ-zc_U-fCA'),x6: G('gps-cs-s/ANWiy9SfmmlnJIO7oCGnBLVV2uPN7Os7EegDOykKgsXz4uEm1uAnJz9TPDkk6Q0ovT0OuDXs3ewoBh62N2504TP8niauFzH3XgrGzSd0qoCLmGK8FPV7GwvR0UA0gKA6JS8xWx3ELZxhKw')}
-    LODGE.hero = RP.court
-    // Real photos of the hotel, from its Google Maps listing
-    const rp = { 'Standard Double': RP.bed, 'Standard Twin': RP.twin, 'Deluxe Double': RP.x6, 'Deluxe Twin': RP.twin, 'Family Room': RP.x6, 'Executive Suite': RP.bed, 'Honeymoon Suite': RP.x6 }
-    for (const [k, p] of Object.entries(rp)) Object.assign(ROOM_INFO[k], { photo: p, gallery: [p, RP.bath, RP.court] })
-    EXPERIENCES.forEach(e => { e.img = ({ dining: RP.food, events: RP.court, transfer: RP.court, nile: RP.court, rafting: RP.court, tour: RP.court })[e.id] })
-    GALLERY.splice(0, GALLERY.length,
-      { src: RP.court, cat: 'Hotel', alt: 'Hotel courtyard and reception' },
-      { src: RP.twin, cat: 'Rooms', alt: 'Twin room' },
-      { src: RP.bed, cat: 'Rooms', alt: 'Double room' },
-      { src: RP.x6, cat: 'Rooms', alt: 'Room' },
-      { src: RP.bath, cat: 'Rooms', alt: 'Bathroom' },
-      { src: RP.food, cat: 'Dining', alt: 'Restaurant dishes' },
-    )
+    if (LODGE.name === 'Royal Park Hotel') {
+      const G = (k) => 'https://lh3.googleusercontent.com/' + k + '=w1400-h933-k-no'
+      const RP = {court: G('gps-cs-s/ANWiy9RaSTRFJuYVqJT8_JZLJuq2r2LZFIQeNUlh_OQwO-11d3v5Tdzh8zrCmiol3RRlOhrcB67GP-4u3LKHI-zPT8cbuFv1lzKXFO_zZ9HLZc4KlL9Kdl5PECFHPwtQQb2ssAgj2slsQw'),twin: G('gps-cs-s/ANWiy9TfP3wrVPcHk9C7s9Z8QEKE0J1KEmHQ65wsZh_oJ_otq3iLLFXZENnVwQLct9iczgmy8wZUnu4e54M0B75aSrAdHN4DnfwOOARAlNyBP8TGyZJQpWJ-OrcbtsI7IDiRRLgORqZCMBy1xOat'),bath: G('gps-cs-s/ANWiy9TDgTGxwApamXYFIZhjd_0H1uj6Bo5G9AwuI538k0zo6hOh5BhZ3M_M7JiOyA_ECvvuJsSOxFbIsD9txubZacfbraO45SzjWVWLblmUjcPZ11Ws3N3nyIKILBBVduNDhPmHupJKTw'),bed: G('gps-cs-s/ANWiy9SyVNAvh_hfuBmrTBTJCBaGnel281s8yFbC_txjMFIQ2S1-PTIQS721Led3ZOf4Unpt2svCfKSBSo_tb5GW3xMVZCFHN63fPke2S99rEXWZ0V9xIw8ZXZL6Y1x9ELZ4j7fNrP0'),food: G('gps-cs-s/ANWiy9RmTbp7FqdlNDqCHFiu-cI8fsUMc81Ip1cZ9reukk09V_rU3sHWnBfcY3-MrlwezIYmTacTruvXjZL8w2_qlPy7o2f3xx_jsdQiwl63qmTpN39ocZQtGS3Q4vscvJ-zc_U-fCA'),x6: G('gps-cs-s/ANWiy9SfmmlnJIO7oCGnBLVV2uPN7Os7EegDOykKgsXz4uEm1uAnJz9TPDkk6Q0ovT0OuDXs3ewoBh62N2504TP8niauFzH3XgrGzSd0qoCLmGK8FPV7GwvR0UA0gKA6JS8xWx3ELZxhKw')}
+      LODGE.hero = RP.court
+      // Real photos of the hotel, from its Google Maps listing
+      const rp = { 'Standard Double': RP.bed, 'Standard Twin': RP.twin, 'Deluxe Double': RP.x6, 'Deluxe Twin': RP.twin, 'Family Room': RP.x6, 'Executive Suite': RP.bed, 'Honeymoon Suite': RP.x6 }
+      for (const [k, p] of Object.entries(rp)) Object.assign(ROOM_INFO[k], { photo: p, gallery: [p, RP.bath, RP.court] })
+      EXPERIENCES.forEach(e => { e.img = ({ dining: RP.food, events: RP.court, transfer: RP.court, nile: RP.court, rafting: RP.court, tour: RP.court })[e.id] })
+      GALLERY.splice(0, GALLERY.length,
+        { src: RP.court, cat: 'Hotel', alt: 'Hotel courtyard and reception' },
+        { src: RP.twin, cat: 'Rooms', alt: 'Twin room' },
+        { src: RP.bed, cat: 'Rooms', alt: 'Double room' },
+        { src: RP.x6, cat: 'Rooms', alt: 'Room' },
+        { src: RP.bath, cat: 'Rooms', alt: 'Bathroom' },
+        { src: RP.food, cat: 'Dining', alt: 'Restaurant dishes' },
+      )
+    }
     for (const [k, [blurb, perks]] of Object.entries(hotel)) Object.assign(ROOM_INFO[k], { blurb, perks })
+  }
+} catch { /* keep the default content */ }
+
+// Secrets Guest House (Entebbe): a quiet garden guest house by the airport. Sample photos and prices until the owner supplies their own.
+try {
+  if (LODGE.secrets) {
+    const r = document.documentElement.style
+    const pal = { 'forest-950': '9 24 28', 'forest-900': '15 47 51', 'forest-800': '22 66 71', 'forest-700': '29 90 96', 'forest-600': '38 119 126', 'forest-500': '47 144 153',
+      'sage-50': '250 246 239', 'sage-100': '243 236 224', 'sage-200': '231 220 199', 'sage-300': '214 196 163', 'cream': '252 250 246' }
+    Object.entries(pal).forEach(([k, v]) => r.setProperty(`--c-${k}`, v))
+    const gal = (a, ...b) => [a, ...b]
+    const photos = { 'Standard Double': ['standard-double.jpg', 'deluxe-double.jpg'], 'Standard Twin': ['canopy.jpg', 'standard-double.jpg'], 'Deluxe Double': ['deluxe-double.jpg', 'standard-double.jpg'], 'Deluxe Twin': ['canopy.jpg', 'deluxe-double.jpg'], 'Family Room': ['family.jpg', 'standard-twin.jpg'], 'Executive Suite': ['executive.jpg', 'family.jpg'], 'Honeymoon Suite': ['honeymoon.jpg', 'executive.jpg'] }
+    for (const [k, [a, b]] of Object.entries(photos)) Object.assign(ROOM_INFO[k], { photo: P + a, gallery: gal(P + a, P + b, P + 'glamp.jpg') })
+    Object.assign(ROOM_INFO['Standard Double'], { beds: '1 double bed', size: '24 m²', blurb: 'A clean, quiet room with a comfortable double bed, mosquito net and a hot-water shower. A restful stop before or after your flight.', perks: ['Garden side', 'Free Wi-Fi', 'Breakfast included'] })
+    Object.assign(ROOM_INFO['Deluxe Double'], { beds: '1 king bed', size: '32 m²', blurb: 'More space, a sitting area and a balcony over the garden, with a king bed and a quiet outlook.', perks: ['Garden balcony', 'Sitting area', 'Breakfast included'] })
+    Object.assign(ROOM_INFO['Deluxe Twin'], { beds: '2 single beds', size: '32 m²', blurb: 'Two comfortable single beds and a garden balcony, ideal for friends or colleagues travelling together.', perks: ['Garden balcony', 'Free Wi-Fi', 'Breakfast included'] })
+    Object.assign(ROOM_INFO['Family Room'], { beds: '1 double + 2 single beds', size: '44 m²', blurb: 'Room for the whole family, with a separate sleeping area, a lounge corner and space for luggage.', perks: ['Sleeps 4', 'Lounge corner', 'Breakfast included'] })
+    EXPERIENCES.splice(0, EXPERIENCES.length,
+      { id: 'airport', img: P + 'lodge.jpg', title: 'Airport pick-up & drop-off', time: 'On request', price: 25, text: 'A driver meets you at Entebbe International Airport, including late arrivals and delayed flights. Just share your flight number.' },
+      { id: 'breakfast', img: P + 'food-rice.jpg', title: 'Home-style breakfast', time: 'Every morning', price: 0, text: 'Eggs your way, fresh fruit, local favourites and good Ugandan coffee, served in the garden. Included with your room.' },
+      { id: 'meals', img: P + 'food-grill.jpg', title: 'Lunch & dinner', time: 'On request', price: 0, text: 'Local and international dishes cooked fresh to order. Pay at the table or charge it to your room.' },
+      { id: 'laundry', img: P + 'standard-twin.jpg', title: 'Laundry & room service', time: 'Daily', price: 5, text: 'Fresh clothes for the next leg of your journey, and meals brought to your room if you prefer.' },
+      { id: 'tour', img: P + 'zebra.jpg', title: 'Entebbe day trips', time: 'Half day', price: 35, text: 'The Botanical Gardens, the Wildlife Education Centre, Lake Victoria beaches and a golf course close by, with a driver arranged for you.' },
+      { id: 'kampala', img: P + 'safari.jpg', title: 'Kampala & safari transfers', time: 'On request', price: 60, text: 'Onward transfers to Kampala, or to your safari departure, in a comfortable private vehicle.' },
+    )
+    MENU.splice(0, MENU.length,
+      { course: 'Breakfast', items: [['Garden breakfast', 'Eggs to order, fruit, toast, tea or Ugandan coffee', 20000], ['Rolex', 'Chapati, eggs and fresh vegetables', 8000]] },
+      { course: 'Lunch & dinner', items: [['Grilled tilapia', 'Matooke, kachumbari and groundnut sauce', 38000], ['Chicken stew', 'With rice, posho or matooke', 28000], ['Club sandwich & chips', 'Chicken, egg, tomato, lettuce', 22000], ['Vegetable curry', 'Seasonal vegetables, coconut sauce, rice', 25000]] },
+      { course: 'Drinks & dessert', items: [['Fresh passion juice', 'Pressed to order', 6000], ['Local beer or soda', 'By the bottle', 6000], ['Ugandan coffee', 'Black or with milk', 6000], ['Fruit salad', 'Seasonal fruit', 10000]] },
+    )
+    GALLERY.splice(0, GALLERY.length,
+      { src: P + 'standard-double.jpg', cat: 'Rooms', alt: 'Double room' },
+      { src: P + 'canopy.jpg', cat: 'Rooms', alt: 'Twin room with mosquito nets' },
+      { src: P + 'deluxe-double.jpg', cat: 'Rooms', alt: 'Deluxe room' },
+      { src: P + 'family.jpg', cat: 'Rooms', alt: 'Family room' },
+      { src: P + 'food-rice.jpg', cat: 'Dining', alt: 'Local dish' },
+      { src: P + 'food-grill.jpg', cat: 'Dining', alt: 'Grilled meat' },
+      { src: P + 'glamp.jpg', cat: 'Garden', alt: 'Garden seating' },
+      { src: P + 'firepit.jpg', cat: 'Garden', alt: 'Garden lawn' },
+    )
   }
 } catch { /* keep the default content */ }

@@ -27,7 +27,7 @@ export default function SiteHome() {
       <section className="max-w-6xl mx-auto px-5 py-16 md:py-20 grid gap-12 md:grid-cols-2 items-center">
         <div>
           <p className="text-gold-dark tracking-[.25em] text-xs uppercase mb-3">Welcome</p>
-          <h2 className="font-display text-3xl md:text-4xl text-forest-900 leading-tight">A quiet corner of Africa, thoughtfully hosted</h2>
+          <h2 className="font-display text-3xl md:text-4xl text-forest-900 leading-tight">{LODGE.welcomeTitle || 'A quiet corner of Africa, thoughtfully hosted'}</h2>
           <p className="mt-5 text-forest-950/70 leading-relaxed">{LODGE.welcome || 'Ten rooms and suites, an infinity pool above the lake, a restaurant serving what the garden grew that morning, and guides who have walked these plains all their lives. Small on purpose, so you are never a number.'}</p>
           <div className="mt-8 grid grid-cols-3 gap-6 text-center">
             {(LODGE.stats || [['10', 'Rooms & suites'], ['4.9', 'Guest rating'], ['24/7', 'Guide on call']]).map(([a, b]) => (
@@ -36,7 +36,7 @@ export default function SiteHome() {
           </div>
           <Link to="/site/about" className="inline-flex items-center gap-2 mt-8 text-forest-800 font-medium hover:underline">Our story <ArrowRight className="w-4 h-4" /></Link>
         </div>
-        <img src="/site/lodge.jpg" alt="Lodge deck and pool" className="rounded-2xl shadow-xl w-full h-[340px] md:h-[420px] object-cover" />
+        <img src={LODGE.welcomeImg || '/site/lodge.jpg'} alt={LODGE.welcomeAlt || 'Lodge deck and pool'} className="rounded-2xl shadow-xl w-full h-[340px] md:h-[420px] object-cover" />
       </section>
 
       <section className="bg-forest-950 py-12">
@@ -59,7 +59,7 @@ export default function SiteHome() {
       </section>
 
       <section className="max-w-6xl mx-auto px-5 py-16 md:py-20">
-        <SectionHead kicker={LODGE.expKicker || 'Beyond your room'} title={LODGE.expTitle ? 'Hotel services' : 'Experiences'} />
+        <SectionHead kicker={LODGE.expKicker || 'Beyond your room'} title={LODGE.servicesTitle || (LODGE.expTitle ? 'Hotel services' : 'Experiences')} />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {EXPERIENCES.slice(0, 3).map(e => (
             <Link to="/site/experiences" key={e.id} className="group relative rounded-2xl overflow-hidden h-80">
@@ -75,7 +75,7 @@ export default function SiteHome() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20" style={{ background: '#1b3520' }}>
+      <section className="py-16 md:py-20 bg-forest-900">
         <div className="max-w-6xl mx-auto px-5">
           <SectionHead light kicker="Guest stories" title="Loved by travellers" />
           <div className="mt-10 grid gap-6 md:grid-cols-3">

@@ -3,6 +3,21 @@
 @tailwind utilities;
 
 :root {
+  /* brand palette (RGB triplets so Tailwind opacity modifiers work); a ?lodge= brand can override these */
+  --c-forest-950: 13 26 15;
+  --c-forest-900: 27 53 32;
+  --c-forest-800: 37 74 44;
+  --c-forest-700: 45 90 34;
+  --c-forest-600: 61 122 48;
+  --c-forest-500: 78 154 62;
+  --c-sage-50: 245 247 238;
+  --c-sage-100: 238 242 228;
+  --c-sage-200: 221 231 200;
+  --c-sage-300: 197 214 160;
+  --c-gold-default: 200 169 110;
+  --c-gold-light: 223 196 148;
+  --c-gold-dark: 168 135 72;
+  --c-cream: 250 250 247;
   --green-950: #0d1a0f;
   --green-900: #1b3520;
   --green-700: #2d5a22;
