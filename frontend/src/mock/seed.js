@@ -49,8 +49,8 @@ export function buildSeed() {
       })
     }
     if (sessionStorage.getItem('lodge-brand') === 'secrets') {
-      // Secrets Guest House (Entebbe): sample room mix and prices (Google lists about USD 28-45 a night)
-      const mix = { 1: ['Standard Double', 100000], 2: ['Standard Double', 100000], 3: ['Standard Double', 100000], 4: ['Deluxe Double', 130000], 5: ['Standard Double', 100000], 6: ['Deluxe Double', 130000], 7: ['Family Room', 180000], 8: ['Deluxe Twin', 130000], 9: ['Deluxe Twin', 130000], 10: ['Family Room', 180000] }
+      // Secrets Guest House (Entebbe): sample room mix and prices (Google Maps shows about UGX 186,883 a night for 2 with breakfast)
+      const mix = { 1: ['Standard Double', 150000], 2: ['Standard Double', 150000], 3: ['Standard Double', 150000], 4: ['Deluxe Double', 187000], 5: ['Standard Double', 150000], 6: ['Deluxe Double', 187000], 7: ['Family Room', 260000], 8: ['Deluxe Twin', 187000], 9: ['Deluxe Twin', 187000], 10: ['Family Room', 260000] }
       rooms.forEach((r) => { const [t, ugx] = mix[r.id]; r.type = t; r.capacity = t === 'Family Room' ? 4 : 2; r.defaultRate = ugx / 3700 })
     }
   } catch { /* keep the default rooms */ }
